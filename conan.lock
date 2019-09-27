@@ -1,0 +1,36 @@
+{
+ "profile": "[settings]\narch=x86_64\narch_build=x86_64\nbuild_type=Release\ncompiler=gcc\ncompiler.libcxx=libstdc++11\ncompiler.version=6\nos=Linux\nos_build=Linux\n[options]\n[build_requires]\n[env]\n",
+ "graph_lock": {
+  "nodes": {
+   "9c1090b8-e070-11e9-aa8a-4c52621781e5": {
+    "pref": "boost/1.71.0@_/_#0:16227604e1a14c8dcad4488915fe62fb570c8dd7#0",
+    "options": "asio_no_deprecated=False\nbzip2=True\nerror_code_header_only=False\nextra_b2_flags=None\nfPIC=True\nfilesystem_no_deprecated=False\nheader_only=False\nlayout=system\nlzma=False\nmagic_autolink=False\nnamespace=boost\nnamespace_alias=False\npython_executable=None\npython_version=None\nsegmented_stacks=False\nshared=False\nsystem_no_deprecated=False\nwithout_atomic=False\nwithout_chrono=False\nwithout_container=False\nwithout_context=False\nwithout_contract=False\nwithout_coroutine=False\nwithout_date_time=False\nwithout_exception=False\nwithout_fiber=False\nwithout_filesystem=False\nwithout_graph=False\nwithout_graph_parallel=False\nwithout_iostreams=False\nwithout_locale=False\nwithout_log=False\nwithout_math=False\nwithout_mpi=False\nwithout_program_options=False\nwithout_python=True\nwithout_random=False\nwithout_regex=False\nwithout_serialization=False\nwithout_stacktrace=False\nwithout_system=False\nwithout_test=False\nwithout_thread=False\nwithout_timer=False\nwithout_type_erasure=False\nwithout_wave=False\nzlib=True\nzstd=False\nbzip2:build_executable=True\nbzip2:fPIC=True\nbzip2:shared=False\nzlib:fPIC=True\nzlib:minizip=False\nzlib:shared=False",
+    "requires": {
+     "zlib/1.2.11@_/_#0": "9c1085c8-e070-11e9-aa8a-4c52621781e5",
+     "bzip2/1.0.8@_/_#0": "9c1088ac-e070-11e9-aa8a-4c52621781e5"
+    }
+   },
+   "9c10945a-e070-11e9-aa8a-4c52621781e5": {
+    "pref": "fmt/6.0.0@_/_#0:d0ec62fc032e5a10524fa454546aa1bdbb22baf8#0",
+    "options": "fPIC=True\nheader_only=False\nshared=False\nwith_fmt_alias=False"
+   },
+   "9c1088ac-e070-11e9-aa8a-4c52621781e5": {
+    "pref": "bzip2/1.0.8@_/_#0:09e3a4c43285997784a5fcaefa367cb780af2032#0",
+    "options": "build_executable=True\nfPIC=True\nshared=False"
+   },
+   "9c1085c8-e070-11e9-aa8a-4c52621781e5": {
+    "pref": "zlib/1.2.11@_/_#0:f7e573cb501ccfc49e9e4d84de886bc1ef2e6ebb#0",
+    "options": "fPIC=True\nminizip=False\nshared=False"
+   },
+   "9c109bda-e070-11e9-aa8a-4c52621781e5": {
+    "pref": null,
+    "options": "boost:asio_no_deprecated=False\nboost:bzip2=True\nboost:error_code_header_only=False\nboost:extra_b2_flags=None\nboost:fPIC=True\nboost:filesystem_no_deprecated=False\nboost:header_only=False\nboost:layout=system\nboost:lzma=False\nboost:magic_autolink=False\nboost:namespace=boost\nboost:namespace_alias=False\nboost:python_executable=None\nboost:python_version=None\nboost:segmented_stacks=False\nboost:shared=False\nboost:system_no_deprecated=False\nboost:without_atomic=False\nboost:without_chrono=False\nboost:without_container=False\nboost:without_context=False\nboost:without_contract=False\nboost:without_coroutine=False\nboost:without_date_time=False\nboost:without_exception=False\nboost:without_fiber=False\nboost:without_filesystem=False\nboost:without_graph=False\nboost:without_graph_parallel=False\nboost:without_iostreams=False\nboost:without_locale=False\nboost:without_log=False\nboost:without_math=False\nboost:without_mpi=False\nboost:without_program_options=False\nboost:without_python=True\nboost:without_random=False\nboost:without_regex=False\nboost:without_serialization=False\nboost:without_stacktrace=False\nboost:without_system=False\nboost:without_test=False\nboost:without_thread=False\nboost:without_timer=False\nboost:without_type_erasure=False\nboost:without_wave=False\nboost:zlib=True\nboost:zstd=False\nbzip2:build_executable=True\nbzip2:fPIC=True\nbzip2:shared=False\nfmt:fPIC=True\nfmt:header_only=False\nfmt:shared=False\nfmt:with_fmt_alias=False\nzlib:fPIC=True\nzlib:minizip=False\nzlib:shared=False",
+    "requires": {
+     "fmt/6.0.0@_/_#0": "9c10945a-e070-11e9-aa8a-4c52621781e5",
+     "boost/1.71.0@_/_#0": "9c1090b8-e070-11e9-aa8a-4c52621781e5"
+    }
+   }
+  }
+ },
+ "version": "0.1"
+}
