@@ -36,6 +36,9 @@
 
 #include <TMCM_Motor.h>
 #include <TMCM_MotorClass.h>
+#include <fmt/format.h>
+#include "../core/core.h"
+#include "../tangohelpers.h"
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor.cpp
 
@@ -50,13 +53,17 @@
 //
 //  Command name  |  Method name
 //================================================================
-//  State         |  Inherited (no method)
+//  State         |  dev_state
 //  Status        |  Inherited (no method)
+//  Stop          |  stop
 //================================================================
 
 //================================================================
-//  Attributes managed is:
+//  Attributes managed are:
 //================================================================
+//  Position      |  Tango::DevDouble	Scalar
+//  Velocity      |  Tango::DevDouble	Scalar
+//  Acceleration  |  Tango::DevDouble	Scalar
 //================================================================
 
 namespace TMCM_Motor_ns
@@ -115,6 +122,9 @@ void TMCM_Motor::delete_device()
 	//	Delete device allocated objects
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::delete_device
+	delete[] attr_Position_read;
+	delete[] attr_Velocity_read;
+	delete[] attr_Acceleration_read;
 }
 
 //--------------------------------------------------------
@@ -132,15 +142,89 @@ void TMCM_Motor::init_device()
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::init_device_before
 	
-	//	No device property to be read from database
+
+	//	Get the device properties from database
+	get_device_property();
 	
+	attr_Position_read = new Tango::DevDouble[1];
+	attr_Velocity_read = new Tango::DevDouble[1];
+	attr_Acceleration_read = new Tango::DevDouble[1];
 	/*----- PROTECTED REGION ID(TMCM_Motor::init_device) ENABLED START -----*/
 	
 	//	Initialize device
+	ci = TMCM::GetCore().GetInterface().get();
+	if(ci) {
+		ChangeState(Tango::ON);
+	} else {
+		ChangeState(Tango::FAULT, "unable to get serial interface (error on global device?)");
+	}
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::init_device
 }
 
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::get_device_property()
+ *	Description : Read database to initialize property data members.
+ */
+//--------------------------------------------------------
+void TMCM_Motor::get_device_property()
+{
+	/*----- PROTECTED REGION ID(TMCM_Motor::get_device_property_before) ENABLED START -----*/
+	
+	//	Initialize property data members
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::get_device_property_before
+
+
+	//	Read device properties from database.
+	Tango::DbData	dev_prop;
+	dev_prop.push_back(Tango::DbDatum("moduleId"));
+	dev_prop.push_back(Tango::DbDatum("motorId"));
+
+	//	is there at least one property to be read ?
+	if (dev_prop.size()>0)
+	{
+		//	Call database and extract values
+		if (Tango::Util::instance()->_UseDb==true)
+			get_db_device()->get_property(dev_prop);
+	
+		//	get instance on TMCM_MotorClass to get class property
+		Tango::DbDatum	def_prop, cl_prop;
+		TMCM_MotorClass	*ds_class =
+			(static_cast<TMCM_MotorClass *>(get_device_class()));
+		int	i = -1;
+
+		//	Try to initialize moduleId from class property
+		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+		if (cl_prop.is_empty()==false)	cl_prop  >>  moduleId;
+		else {
+			//	Try to initialize moduleId from default device value
+			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+			if (def_prop.is_empty()==false)	def_prop  >>  moduleId;
+		}
+		//	And try to extract moduleId value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  moduleId;
+
+		//	Try to initialize motorId from class property
+		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+		if (cl_prop.is_empty()==false)	cl_prop  >>  motorId;
+		else {
+			//	Try to initialize motorId from default device value
+			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+			if (def_prop.is_empty()==false)	def_prop  >>  motorId;
+		}
+		//	And try to extract motorId value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  motorId;
+
+	}
+
+	/*----- PROTECTED REGION ID(TMCM_Motor::get_device_property_after) ENABLED START -----*/
+	
+	//	Check device property data members init
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::get_device_property_after
+}
 
 //--------------------------------------------------------
 /**
@@ -173,7 +257,161 @@ void TMCM_Motor::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_attr_hardware
 }
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::write_attr_hardware()
+ *	Description : Hardware writing for attributes
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
+{
+	DEBUG_STREAM << "TMCM_Motor::write_attr_hardware(vector<long> &attr_list) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_attr_hardware) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_attr_hardware
+}
 
+//--------------------------------------------------------
+/**
+ *	Read attribute Position related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_Position(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_Position(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_Position) ENABLED START -----*/
+	//	Set the attribute value
+	//attr.set_value(attr_Position_read);
+	try {
+		if(ci) {
+			//TMCM::Builder::RotateLeft(TMCM::Module(moduleId), TMCM::Motor(motorId), 100)
+			auto result = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::ActualPosition, TMCM::Motor(motorId)));
+			if(result.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
+				ChangeState(Tango::ALARM, fmt::format("unable read position, error: {}", result.GetStatus()));
+				return;
+			}
+			Tango::DevDouble pos = result.PayloadAsInt();
+			attr.set_value(&pos);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_Position
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Position related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_Position(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_Position(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_Position) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			//TMCM::Builder::RotateLeft(TMCM::Module(moduleId), TMCM::Motor(motorId), 100)
+			auto result = ci->writeRead(TMCM::Builder::MoveToPosition(TMCM::Module(moduleId), TMCM::Motor(motorId), int32_t(w_val)));
+			if(result.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
+				ChangeState(Tango::ALARM, "unable write position");
+			}
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_Position
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute Velocity related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_Velocity(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_Velocity(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_Velocity) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_Velocity_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_Velocity
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Velocity related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_Velocity(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_Velocity(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_Velocity) ENABLED START -----*/
+	
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_Velocity
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute Acceleration related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_Acceleration(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_Acceleration(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_Acceleration) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_Acceleration_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_Acceleration
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Acceleration related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_Acceleration(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_Acceleration(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_Acceleration) ENABLED START -----*/
+	
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_Acceleration
+}
 
 //--------------------------------------------------------
 /**
@@ -193,6 +431,63 @@ void TMCM_Motor::add_dynamic_attributes()
 
 //--------------------------------------------------------
 /**
+ *	Command State related method
+ *	Description: This command gets the device state (stored in its device_state data member) and returns it to the caller.
+ *
+ *	@returns Device state
+ */
+//--------------------------------------------------------
+Tango::DevState TMCM_Motor::dev_state()
+{
+	DEBUG_STREAM << "TMCM_Motor::State()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::dev_state) ENABLED START -----*/
+	
+	Tango::DevState	argout = get_state();
+	if(get_state() == Tango::ON || get_state() == Tango::MOVING) {
+		try {
+			if(ci) {
+				auto cmd = TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::PositionReached, TMCM::Motor(motorId));
+				auto result = ci->writeRead(cmd);
+				if(result.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
+					set_status(fmt::format("unable to query motor status, error: {}", result.GetStatus()));
+					argout = Tango::ALARM;
+				}
+				if(result.PayloadAsInt() == 0) {
+					argout = Tango::MOVING;
+				}
+				else if(result.PayloadAsInt() == 1) {
+					argout = Tango::ON;
+				}
+			}
+		} catch(const TMCM::Exception& ex) {
+			tangohelpers::TranslateException(ex);
+		}
+	}
+
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::dev_state
+	set_state(argout);    // Give the state to Tango.
+	if (argout!=Tango::ALARM)
+		Tango::DeviceImpl::dev_state();
+	return get_state();  // Return it after Tango management.
+}
+//--------------------------------------------------------
+/**
+ *	Command Stop related method
+ *	Description: stopps the motor
+ *
+ */
+//--------------------------------------------------------
+void TMCM_Motor::stop()
+{
+	DEBUG_STREAM << "TMCM_Motor::Stop()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::stop) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::stop
+}
+//--------------------------------------------------------
+/**
  *	Method      : TMCM_Motor::add_dynamic_commands()
  *	Description : Create the dynamic commands if any
  *                for specified device.
@@ -209,7 +504,11 @@ void TMCM_Motor::add_dynamic_commands()
 
 /*----- PROTECTED REGION ID(TMCM_Motor::namespace_ending) ENABLED START -----*/
 
-//	Additional Methods
+void TMCM_Motor::ChangeState(Tango::DevState newState, const std::string& str)
+{
+	set_state(newState);
+	set_status(str.empty() ? Tango::StatusNotSet : str);
+}
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::namespace_ending
 } //	namespace

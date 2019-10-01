@@ -4,10 +4,7 @@
 #include <chrono>
 #include <experimental/optional>
 
-#ifndef POWERPMAC_STOPWATCH_H
-#define POWERPMAC_STOPWATCH_H
-
-namespace util {
+namespace TMCM {
 
 	template<typename T>
 	using optional = std::experimental::optional<T>;
@@ -86,5 +83,3 @@ namespace util {
 	};
 
 }
-
-#endif //POWERPMAC_STOPWATCH_H

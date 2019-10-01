@@ -36,6 +36,7 @@
 
 #include <TMCM_Global.h>
 #include <TMCM_GlobalClass.h>
+#include "../core/core.h"
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Global.cpp
 
@@ -79,7 +80,7 @@ TMCM_Global::TMCM_Global(Tango::DeviceClass *cl, string &s)
 {
 	/*----- PROTECTED REGION ID(TMCM_Global::constructor_1) ENABLED START -----*/
 	init_device();
-	
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::constructor_1
 }
 //--------------------------------------------------------
@@ -88,7 +89,7 @@ TMCM_Global::TMCM_Global(Tango::DeviceClass *cl, const char *s)
 {
 	/*----- PROTECTED REGION ID(TMCM_Global::constructor_2) ENABLED START -----*/
 	init_device();
-	
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::constructor_2
 }
 //--------------------------------------------------------
@@ -97,7 +98,7 @@ TMCM_Global::TMCM_Global(Tango::DeviceClass *cl, const char *s, const char *d)
 {
 	/*----- PROTECTED REGION ID(TMCM_Global::constructor_3) ENABLED START -----*/
 	init_device();
-	
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::constructor_3
 }
 
@@ -111,9 +112,9 @@ void TMCM_Global::delete_device()
 {
 	DEBUG_STREAM << "TMCM_Global::delete_device() " << device_name << endl;
 	/*----- PROTECTED REGION ID(TMCM_Global::delete_device) ENABLED START -----*/
-	
+
 	//	Delete device allocated objects
-	
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::delete_device
 }
 
@@ -127,9 +128,9 @@ void TMCM_Global::init_device()
 {
 	DEBUG_STREAM << "TMCM_Global::init_device() create device " << device_name << endl;
 	/*----- PROTECTED REGION ID(TMCM_Global::init_device_before) ENABLED START -----*/
-	
+
 	//	Initialization before get_device_property() call
-	
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::init_device_before
 	
 
@@ -137,9 +138,17 @@ void TMCM_Global::init_device()
 	get_device_property();
 	
 	/*----- PROTECTED REGION ID(TMCM_Global::init_device) ENABLED START -----*/
-	
+
 	//	Initialize device
-	
+	auto& core = TMCM::GetCore();
+	try {
+		core.Init(serialPort, baudrate, modules);
+		set_state(Tango::ON);
+	} catch (const std::exception& ex) {
+		set_state(Tango::FAULT);
+		set_status("unable to open serial port '" + serialPort + "'");
+	}
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::init_device
 }
 
@@ -152,16 +161,17 @@ void TMCM_Global::init_device()
 void TMCM_Global::get_device_property()
 {
 	/*----- PROTECTED REGION ID(TMCM_Global::get_device_property_before) ENABLED START -----*/
-	
+
 	//	Initialize property data members
-	
+
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::get_device_property_before
 
 
 	//	Read device properties from database.
 	Tango::DbData	dev_prop;
-	dev_prop.push_back(Tango::DbDatum("port"));
+	dev_prop.push_back(Tango::DbDatum("serialPort"));
 	dev_prop.push_back(Tango::DbDatum("baudrate"));
+	dev_prop.push_back(Tango::DbDatum("modules"));
 
 	//	is there at least one property to be read ?
 	if (dev_prop.size()>0)
@@ -176,16 +186,16 @@ void TMCM_Global::get_device_property()
 			(static_cast<TMCM_GlobalClass *>(get_device_class()));
 		int	i = -1;
 
-		//	Try to initialize port from class property
+		//	Try to initialize serialPort from class property
 		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
-		if (cl_prop.is_empty()==false)	cl_prop  >>  port;
+		if (cl_prop.is_empty()==false)	cl_prop  >>  serialPort;
 		else {
-			//	Try to initialize port from default device value
+			//	Try to initialize serialPort from default device value
 			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
-			if (def_prop.is_empty()==false)	def_prop  >>  port;
+			if (def_prop.is_empty()==false)	def_prop  >>  serialPort;
 		}
-		//	And try to extract port value from database
-		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  port;
+		//	And try to extract serialPort value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  serialPort;
 
 		//	Try to initialize baudrate from class property
 		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
@@ -197,6 +207,17 @@ void TMCM_Global::get_device_property()
 		}
 		//	And try to extract baudrate value from database
 		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  baudrate;
+
+		//	Try to initialize modules from class property
+		cl_prop = ds_class->get_class_property(dev_prop[++i].name);
+		if (cl_prop.is_empty()==false)	cl_prop  >>  modules;
+		else {
+			//	Try to initialize modules from default device value
+			def_prop = ds_class->get_default_device_property(dev_prop[i].name);
+			if (def_prop.is_empty()==false)	def_prop  >>  modules;
+		}
+		//	And try to extract modules value from database
+		if (dev_prop[i].is_empty()==false)	dev_prop[i]  >>  modules;
 
 	}
 

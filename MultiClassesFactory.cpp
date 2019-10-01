@@ -1,9 +1,11 @@
-/*----- PROTECTED REGION ID(TMCM_GlobalStateMachine.cpp) ENABLED START -----*/
 //=============================================================================
 //
-// file :        TMCM_GlobalStateMachine.cpp
+// file :        MultiClassessFactory.cpp
 //
-// description : State machine file for the TMCM_Global class
+// description : C++ source for the class_factory method of the DServer
+//               device class. This method is responsible for the creation of
+//               all class singleton for a device server. It is called
+//               at device server startup.
 //
 // project :     
 //
@@ -29,33 +31,16 @@
 //        (Program Obviously used to Generate tango Object)
 //=============================================================================
 
-#include <TMCM_Global.h>
+#include <tango.h>
+#include <TMCM_GlobalClass.h>
+#include <TMCM_MotorClass.h>
 
-/*----- PROTECTED REGION END -----*/	//	TMCM_Global::TMCM_GlobalStateMachine.cpp
+/**
+ *	Create Class singletons and store them in DServer object.
+ */
 
-//================================================================
-//  States  |  Description
-//================================================================
-//  ON      |  
-//  FAULT   |  
-
-
-namespace TMCM_Global_ns
+void Tango::DServer::class_factory()
 {
-//=================================================
-//		Attributes Allowed Methods
-//=================================================
-
-
-//=================================================
-//		Commands Allowed Methods
-//=================================================
-
-
-/*----- PROTECTED REGION ID(TMCM_Global::TMCM_GlobalStateAllowed.AdditionalMethods) ENABLED START -----*/
-
-//	Additional Methods
-
-/*----- PROTECTED REGION END -----*/	//	TMCM_Global::TMCM_GlobalStateAllowed.AdditionalMethods
-
-}	//	End of namespace
+	add_class(TMCM_Global_ns::TMCM_GlobalClass::init("TMCM_Global"));
+	add_class(TMCM_Motor_ns::TMCM_MotorClass::init("TMCM_Motor"));
+}

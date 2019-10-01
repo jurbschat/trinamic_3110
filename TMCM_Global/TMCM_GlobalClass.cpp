@@ -217,7 +217,7 @@ void TMCM_GlobalClass::set_default_property()
 	//	Set Default Class Properties
 
 	//	Set Default device Properties
-	prop_name = "port";
+	prop_name = "serialPort";
 	prop_desc = "the serial port interface e.g. /dev/ttyUSB0";
 	prop_def  = "";
 	vect_data.clear();
@@ -235,6 +235,20 @@ void TMCM_GlobalClass::set_default_property()
 	prop_def  = "9600";
 	vect_data.clear();
 	vect_data.push_back("9600");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "modules";
+	prop_desc = "the module addresses that are connected.\nThis has to be set on the module specifically, \nnewly created modules always have the id 1 if\nnot set diffefently. The ID(s) should be written on the \nmodule box(es).";
+	prop_def  = "1";
+	vect_data.clear();
+	vect_data.push_back("1");
 	if (prop_def.length()>0)
 	{
 		Tango::DbDatum	data(prop_name);

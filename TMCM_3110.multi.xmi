@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ASCII"?>
+<pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
+  <multiClasses pogoRevision="9.4" name="TMCM_3110" sourcePath="/home/urbschaj/dev/tango-servers/tmcm_3110" description="" filestogenerate="XMI   file,Code files,Makefile,Protected Regions">
+    <classes classname="TMCM_Global" sourcePath="./TMCM_Global">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
+    <classes classname="TMCM_Motor" sourcePath="./TMCM_Motor">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
+    <preferences makefileHome="/usr/share/pogo/preferences"/>
+  </multiClasses>
+</pogoDsl:PogoSystem>

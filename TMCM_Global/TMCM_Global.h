@@ -62,10 +62,16 @@ class TMCM_Global : public TANGO_BASE_CLASS
 
 //	Device property data members
 public:
-	//	port:	the serial port interface e.g. /dev/ttyUSB0
-	string	port;
+	//	serialPort:	the serial port interface e.g. /dev/ttyUSB0
+	string	serialPort;
 	//	baudrate:	baudrate of the serial interface
 	Tango::DevLong	baudrate;
+	//	modules:	the module addresses that are connected.
+	//  This has to be set on the module specifically, 
+	//  newly created modules always have the id 1 if
+	//  not set diffefently. The ID(s) should be written on the 
+	//  module box(es).
+	vector<Tango::DevLong>	modules;
 
 
 //	Constructors and destructors

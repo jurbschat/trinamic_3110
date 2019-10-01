@@ -36,6 +36,10 @@
 //================================================================
 //  States  |  Description
 //================================================================
+//  ON      |  
+//  FAULT   |  
+//  ALARM   |  
+//  MOVING  |  
 
 
 namespace TMCM_Motor_ns
@@ -44,10 +48,149 @@ namespace TMCM_Motor_ns
 //		Attributes Allowed Methods
 //=================================================
 
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_Position_allowed()
+ *	Description : Execution allowed for Position attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_Position_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Check access type.
+	if ( type!=Tango::READ_REQ )
+	{
+		//	Compare device state with not allowed states for WRITE 
+		if (get_state()==Tango::FAULT ||
+			get_state()==Tango::MOVING)
+		{
+		/*----- PROTECTED REGION ID(TMCM_Motor::PositionStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::PositionStateAllowed_WRITE
+			return false;
+		}
+		return true;
+	}
+	else
+
+	//	Check access type.
+	if ( type==Tango::READ_REQ )
+	{
+		//	Compare device state with not allowed states for READ 
+		if (get_state()==Tango::FAULT)
+		{
+		/*----- PROTECTED REGION ID(TMCM_Motor::PositionStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::PositionStateAllowed_READ
+			return false;
+		}
+		return true;
+	}
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_Velocity_allowed()
+ *	Description : Execution allowed for Velocity attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_Velocity_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Check access type.
+	if ( type!=Tango::READ_REQ )
+	{
+		//	Compare device state with not allowed states for WRITE 
+		if (get_state()==Tango::FAULT ||
+			get_state()==Tango::MOVING)
+		{
+		/*----- PROTECTED REGION ID(TMCM_Motor::VelocityStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::VelocityStateAllowed_WRITE
+			return false;
+		}
+		return true;
+	}
+	else
+
+	//	Check access type.
+	if ( type==Tango::READ_REQ )
+	{
+		//	Compare device state with not allowed states for READ 
+		if (get_state()==Tango::FAULT)
+		{
+		/*----- PROTECTED REGION ID(TMCM_Motor::VelocityStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::VelocityStateAllowed_READ
+			return false;
+		}
+		return true;
+	}
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_Acceleration_allowed()
+ *	Description : Execution allowed for Acceleration attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_Acceleration_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Check access type.
+	if ( type!=Tango::READ_REQ )
+	{
+		//	Compare device state with not allowed states for WRITE 
+		if (get_state()==Tango::FAULT ||
+			get_state()==Tango::MOVING)
+		{
+		/*----- PROTECTED REGION ID(TMCM_Motor::AccelerationStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::AccelerationStateAllowed_WRITE
+			return false;
+		}
+		return true;
+	}
+	else
+
+	//	Check access type.
+	if ( type==Tango::READ_REQ )
+	{
+		//	Compare device state with not allowed states for READ 
+		if (get_state()==Tango::FAULT)
+		{
+		/*----- PROTECTED REGION ID(TMCM_Motor::AccelerationStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::AccelerationStateAllowed_READ
+			return false;
+		}
+		return true;
+	}
+	return true;
+}
+
 
 //=================================================
 //		Commands Allowed Methods
 //=================================================
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_Stop_allowed()
+ *	Description : Execution allowed for Stop attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_Stop_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Compare device state with not allowed states.
+	if (get_state()==Tango::FAULT)
+	{
+	/*----- PROTECTED REGION ID(TMCM_Motor::StopStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::StopStateAllowed
+		return false;
+	}
+	return true;
+}
 
 
 /*----- PROTECTED REGION ID(TMCM_Motor::TMCM_MotorStateAllowed.AdditionalMethods) ENABLED START -----*/

@@ -34,6 +34,7 @@
 #define TMCM_Motor_H
 
 #include <tango.h>
+#include "../core/core.h"
 
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor.h
@@ -57,10 +58,22 @@ class TMCM_Motor : public TANGO_BASE_CLASS
 /*----- PROTECTED REGION ID(TMCM_Motor::Data Members) ENABLED START -----*/
 
 //	Add your own data members
+	TMCM::ControllerInterface* ci = nullptr;
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::Data Members
 
+//	Device property data members
+public:
+	//	moduleId:	module id (0 ... 255)
+	Tango::DevLong	moduleId;
+	//	motorId:	motor id (0...2)
+	Tango::DevLong	motorId;
 
+//	Attribute data members
+public:
+	Tango::DevDouble	*attr_Position_read;
+	Tango::DevDouble	*attr_Velocity_read;
+	Tango::DevDouble	*attr_Acceleration_read;
 
 //	Constructors and destructors
 public:
@@ -103,6 +116,10 @@ public:
 	 */
 	virtual void init_device();
 	/*
+	 *	Read the device properties from database
+	 */
+	void get_device_property();
+	/*
 	 *	Always executed method before execution command method.
 	 */
 	virtual void always_executed_hook();
@@ -117,6 +134,44 @@ public:
 	 */
 	//--------------------------------------------------------
 	virtual void read_attr_hardware(vector<long> &attr_list);
+	//--------------------------------------------------------
+	/*
+	 *	Method      : TMCM_Motor::write_attr_hardware()
+	 *	Description : Hardware writing for attributes.
+	 */
+	//--------------------------------------------------------
+	virtual void write_attr_hardware(vector<long> &attr_list);
+
+/**
+ *	Attribute Position related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_Position(Tango::Attribute &attr);
+	virtual void write_Position(Tango::WAttribute &attr);
+	virtual bool is_Position_allowed(Tango::AttReqType type);
+/**
+ *	Attribute Velocity related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_Velocity(Tango::Attribute &attr);
+	virtual void write_Velocity(Tango::WAttribute &attr);
+	virtual bool is_Velocity_allowed(Tango::AttReqType type);
+/**
+ *	Attribute Acceleration related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_Acceleration(Tango::Attribute &attr);
+	virtual void write_Acceleration(Tango::WAttribute &attr);
+	virtual bool is_Acceleration_allowed(Tango::AttReqType type);
 
 
 	//--------------------------------------------------------
@@ -132,6 +187,20 @@ public:
 
 //	Command related methods
 public:
+	/**
+	 *	Command State related method
+	 *	Description: This command gets the device state (stored in its device_state data member) and returns it to the caller.
+	 *
+	 *	@returns Device state
+	 */
+	virtual Tango::DevState dev_state();
+	/**
+	 *	Command Stop related method
+	 *	Description: stopps the motor
+	 *
+	 */
+	virtual void stop();
+	virtual bool is_Stop_allowed(const CORBA::Any &any);
 
 
 	//--------------------------------------------------------
@@ -145,6 +214,7 @@ public:
 /*----- PROTECTED REGION ID(TMCM_Motor::Additional Method prototypes) ENABLED START -----*/
 
 //	Additional Method prototypes
+	void ChangeState(Tango::DevState newState, const std::string& str = "");
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::Additional Method prototypes
 };

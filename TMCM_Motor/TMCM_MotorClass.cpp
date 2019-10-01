@@ -148,6 +148,24 @@ TMCM_MotorClass *TMCM_MotorClass::instance()
 //===================================================================
 //	Command execution method calls
 //===================================================================
+//--------------------------------------------------------
+/**
+ * method : 		StopClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *StopClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "StopClass::execute(): arrived" << endl;
+	((static_cast<TMCM_Motor *>(device))->stop());
+	return new CORBA::Any();
+}
+
 
 //===================================================================
 //	Properties management
@@ -217,6 +235,34 @@ void TMCM_MotorClass::set_default_property()
 	//	Set Default Class Properties
 
 	//	Set Default device Properties
+	prop_name = "moduleId";
+	prop_desc = "module id (0 ... 255)";
+	prop_def  = "1";
+	vect_data.clear();
+	vect_data.push_back("1");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
+	prop_name = "motorId";
+	prop_desc = "motor id (0...2)";
+	prop_def  = "0";
+	vect_data.clear();
+	vect_data.push_back("0");
+	if (prop_def.length()>0)
+	{
+		Tango::DbDatum	data(prop_name);
+		data << vect_data ;
+		dev_def_prop.push_back(data);
+		add_wiz_dev_prop(prop_name, prop_desc,  prop_def);
+	}
+	else
+		add_wiz_dev_prop(prop_name, prop_desc);
 }
 
 //--------------------------------------------------------
@@ -323,6 +369,78 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Add your own code
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_MotorClass::attribute_factory_before
+	//	Attribute : Position
+	PositionAttrib	*position = new PositionAttrib();
+	Tango::UserDefaultAttrProp	position_prop;
+	//	description	not set for Position
+	//	label	not set for Position
+	//	unit	not set for Position
+	//	standard_unit	not set for Position
+	//	display_unit	not set for Position
+	//	format	not set for Position
+	//	max_value	not set for Position
+	//	min_value	not set for Position
+	//	max_alarm	not set for Position
+	//	min_alarm	not set for Position
+	//	max_warning	not set for Position
+	//	min_warning	not set for Position
+	//	delta_t	not set for Position
+	//	delta_val	not set for Position
+	
+	position->set_default_properties(position_prop);
+	//	Not Polled
+	position->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(position);
+
+	//	Attribute : Velocity
+	VelocityAttrib	*velocity = new VelocityAttrib();
+	Tango::UserDefaultAttrProp	velocity_prop;
+	//	description	not set for Velocity
+	//	label	not set for Velocity
+	//	unit	not set for Velocity
+	//	standard_unit	not set for Velocity
+	//	display_unit	not set for Velocity
+	//	format	not set for Velocity
+	//	max_value	not set for Velocity
+	//	min_value	not set for Velocity
+	//	max_alarm	not set for Velocity
+	//	min_alarm	not set for Velocity
+	//	max_warning	not set for Velocity
+	//	min_warning	not set for Velocity
+	//	delta_t	not set for Velocity
+	//	delta_val	not set for Velocity
+	
+	velocity->set_default_properties(velocity_prop);
+	//	Not Polled
+	velocity->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(velocity);
+
+	//	Attribute : Acceleration
+	AccelerationAttrib	*acceleration = new AccelerationAttrib();
+	Tango::UserDefaultAttrProp	acceleration_prop;
+	//	description	not set for Acceleration
+	//	label	not set for Acceleration
+	//	unit	not set for Acceleration
+	//	standard_unit	not set for Acceleration
+	//	display_unit	not set for Acceleration
+	//	format	not set for Acceleration
+	//	max_value	not set for Acceleration
+	//	min_value	not set for Acceleration
+	//	max_alarm	not set for Acceleration
+	//	min_alarm	not set for Acceleration
+	//	max_warning	not set for Acceleration
+	//	min_warning	not set for Acceleration
+	//	delta_t	not set for Acceleration
+	//	delta_val	not set for Acceleration
+	
+	acceleration->set_default_properties(acceleration_prop);
+	//	Not Polled
+	acceleration->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(acceleration);
+
 
 	//	Create a list of static attributes
 	create_static_attribute_list(get_class_attr()->get_attr_list());
@@ -367,6 +485,15 @@ void TMCM_MotorClass::command_factory()
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_MotorClass::command_factory_before
 
+
+	//	Command Stop
+	StopClass	*pStopCmd =
+		new StopClass("Stop",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pStopCmd);
 
 	/*----- PROTECTED REGION ID(TMCM_MotorClass::command_factory_after) ENABLED START -----*/
 	

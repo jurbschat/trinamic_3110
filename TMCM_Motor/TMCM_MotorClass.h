@@ -51,6 +51,82 @@ namespace TMCM_Motor_ns
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_MotorClass::classes for dynamic creation
 
+//=========================================
+//	Define classes for attributes
+//=========================================
+//	Attribute Position class definition
+class PositionAttrib: public Tango::Attr
+{
+public:
+	PositionAttrib():Attr("Position",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~PositionAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_Position(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_Position(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_Position_allowed(ty);}
+};
+
+//	Attribute Velocity class definition
+class VelocityAttrib: public Tango::Attr
+{
+public:
+	VelocityAttrib():Attr("Velocity",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~VelocityAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_Velocity(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_Velocity(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_Velocity_allowed(ty);}
+};
+
+//	Attribute Acceleration class definition
+class AccelerationAttrib: public Tango::Attr
+{
+public:
+	AccelerationAttrib():Attr("Acceleration",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~AccelerationAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_Acceleration(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_Acceleration(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_Acceleration_allowed(ty);}
+};
+
+
+//=========================================
+//	Define classes for commands
+//=========================================
+//	Command Stop class definition
+class StopClass : public Tango::Command
+{
+public:
+	StopClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	StopClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~StopClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<TMCM_Motor *>(dev))->is_Stop_allowed(any);}
+};
+
+
 /**
  *	The TMCM_MotorClass singleton definition
  */
