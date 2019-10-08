@@ -73,7 +73,6 @@ class TMCM_Motor : public TANGO_BASE_CLASS
 
 //	Add your own data members
 	TMCM::ControllerInterface* ci = nullptr;
-	float direction = 1;
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::Data Members
 
@@ -89,22 +88,24 @@ public:
 	Tango::DevDouble	*attr_Position_read;
 	Tango::DevDouble	*attr_Velocity_read;
 	Tango::DevDouble	*attr_Acceleration_read;
-	Tango::DevDouble	*attr_RunCurrent_read;
-	Tango::DevDouble	*attr_HoldCurrent_read;
-	Tango::DevBoolean	*attr_InvertDirection_read;
+	Tango::DevDouble	*attr_ConversionFactor_read;
 	Tango::DevBoolean	*attr_SoftLimitEnable_read;
 	Tango::DevDouble	*attr_SoftCwLimit_read;
 	Tango::DevDouble	*attr_SoftCcwLimit_read;
 	Tango::DevBoolean	*attr_SoftCwLimitFault_read;
 	Tango::DevBoolean	*attr_SoftCcwLimitFault_read;
-	Tango::DevDouble	*attr_HomeOffset_read;
 	Tango::DevBoolean	*attr_CwLimitFault_read;
 	Tango::DevBoolean	*attr_CcwLimitFault_read;
+	Tango::DevDouble	*attr_RunCurrent_read;
+	Tango::DevDouble	*attr_HoldCurrent_read;
 	MicrostepsEnum	*attr_Microsteps_read;
 	Tango::DevULong	*attr_RampDivisor_read;
 	Tango::DevULong	*attr_PulseDivisor_read;
 	Tango::DevBoolean	*attr_StepInterpolation_read;
 	Tango::DevULong	*attr_FreeWheeling_read;
+	Tango::DevLong	*attr_HomeOffset_read;
+	Tango::DevBoolean	*attr_DisableLeftLimit_read;
+	Tango::DevBoolean	*attr_DisableRightLimit_read;
 
 //	Constructors and destructors
 public:
@@ -175,7 +176,7 @@ public:
 
 /**
  *	Attribute Position related methods
- *	Description: 
+ *	Description: position in real world units (affected by conversion factor)
  *
  *	Data type:	Tango::DevDouble
  *	Attr type:	Scalar
@@ -185,7 +186,7 @@ public:
 	virtual bool is_Position_allowed(Tango::AttReqType type);
 /**
  *	Attribute Velocity related methods
- *	Description: 
+ *	Description: velocity in real world units/s (affected by conversion factor)
  *
  *	Data type:	Tango::DevDouble
  *	Attr type:	Scalar
@@ -195,7 +196,7 @@ public:
 	virtual bool is_Velocity_allowed(Tango::AttReqType type);
 /**
  *	Attribute Acceleration related methods
- *	Description: 
+ *	Description: acceleration in real world units/s^2 (affected by conversion factor)
  *
  *	Data type:	Tango::DevDouble
  *	Attr type:	Scalar
@@ -204,35 +205,15 @@ public:
 	virtual void write_Acceleration(Tango::WAttribute &attr);
 	virtual bool is_Acceleration_allowed(Tango::AttReqType type);
 /**
- *	Attribute RunCurrent related methods
- *	Description: run current
+ *	Attribute ConversionFactor related methods
+ *	Description: sets the conversion between real and internal units for the position/acceleration/velocity and soft limits
  *
  *	Data type:	Tango::DevDouble
  *	Attr type:	Scalar
  */
-	virtual void read_RunCurrent(Tango::Attribute &attr);
-	virtual void write_RunCurrent(Tango::WAttribute &attr);
-	virtual bool is_RunCurrent_allowed(Tango::AttReqType type);
-/**
- *	Attribute HoldCurrent related methods
- *	Description: hold current if no move is in action
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar
- */
-	virtual void read_HoldCurrent(Tango::Attribute &attr);
-	virtual void write_HoldCurrent(Tango::WAttribute &attr);
-	virtual bool is_HoldCurrent_allowed(Tango::AttReqType type);
-/**
- *	Attribute InvertDirection related methods
- *	Description: 
- *
- *	Data type:	Tango::DevBoolean
- *	Attr type:	Scalar
- */
-	virtual void read_InvertDirection(Tango::Attribute &attr);
-	virtual void write_InvertDirection(Tango::WAttribute &attr);
-	virtual bool is_InvertDirection_allowed(Tango::AttReqType type);
+	virtual void read_ConversionFactor(Tango::Attribute &attr);
+	virtual void write_ConversionFactor(Tango::WAttribute &attr);
+	virtual bool is_ConversionFactor_allowed(Tango::AttReqType type);
 /**
  *	Attribute SoftLimitEnable related methods
  *	Description: 
@@ -282,16 +263,6 @@ public:
 	virtual void read_SoftCcwLimitFault(Tango::Attribute &attr);
 	virtual bool is_SoftCcwLimitFault_allowed(Tango::AttReqType type);
 /**
- *	Attribute HomeOffset related methods
- *	Description: 
- *
- *	Data type:	Tango::DevDouble
- *	Attr type:	Scalar
- */
-	virtual void read_HomeOffset(Tango::Attribute &attr);
-	virtual void write_HomeOffset(Tango::WAttribute &attr);
-	virtual bool is_HomeOffset_allowed(Tango::AttReqType type);
-/**
  *	Attribute CwLimitFault related methods
  *	Description: 
  *
@@ -310,8 +281,28 @@ public:
 	virtual void read_CcwLimitFault(Tango::Attribute &attr);
 	virtual bool is_CcwLimitFault_allowed(Tango::AttReqType type);
 /**
+ *	Attribute RunCurrent related methods
+ *	Description: current when the motor is moving
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_RunCurrent(Tango::Attribute &attr);
+	virtual void write_RunCurrent(Tango::WAttribute &attr);
+	virtual bool is_RunCurrent_allowed(Tango::AttReqType type);
+/**
+ *	Attribute HoldCurrent related methods
+ *	Description: hold current if no move is in action
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_HoldCurrent(Tango::Attribute &attr);
+	virtual void write_HoldCurrent(Tango::WAttribute &attr);
+	virtual bool is_HoldCurrent_allowed(Tango::AttReqType type);
+/**
  *	Attribute Microsteps related methods
- *	Description: 
+ *	Description: amount of steps between fullsteps
  *
  *	Data type:	Tango::DevEnum
  *	Attr type:	Scalar
@@ -321,7 +312,7 @@ public:
 	virtual bool is_Microsteps_allowed(Tango::AttReqType type);
 /**
  *	Attribute RampDivisor related methods
- *	Description: 
+ *	Description: divisor to calculate the acceelration ramp
  *
  *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
@@ -331,7 +322,7 @@ public:
 	virtual bool is_RampDivisor_allowed(Tango::AttReqType type);
 /**
  *	Attribute PulseDivisor related methods
- *	Description: 
+ *	Description: divisor to calculate the ustep ferquency
  *
  *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
@@ -341,7 +332,7 @@ public:
 	virtual bool is_PulseDivisor_allowed(Tango::AttReqType type);
 /**
  *	Attribute StepInterpolation related methods
- *	Description: 
+ *	Description: interpolates 16 microsteps to 265
  *
  *	Data type:	Tango::DevBoolean
  *	Attr type:	Scalar
@@ -359,6 +350,36 @@ public:
 	virtual void read_FreeWheeling(Tango::Attribute &attr);
 	virtual void write_FreeWheeling(Tango::WAttribute &attr);
 	virtual bool is_FreeWheeling_allowed(Tango::AttReqType type);
+/**
+ *	Attribute HomeOffset related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevLong
+ *	Attr type:	Scalar
+ */
+	virtual void read_HomeOffset(Tango::Attribute &attr);
+	virtual void write_HomeOffset(Tango::WAttribute &attr);
+	virtual bool is_HomeOffset_allowed(Tango::AttReqType type);
+/**
+ *	Attribute DisableLeftLimit related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_DisableLeftLimit(Tango::Attribute &attr);
+	virtual void write_DisableLeftLimit(Tango::WAttribute &attr);
+	virtual bool is_DisableLeftLimit_allowed(Tango::AttReqType type);
+/**
+ *	Attribute DisableRightLimit related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_DisableRightLimit(Tango::Attribute &attr);
+	virtual void write_DisableRightLimit(Tango::WAttribute &attr);
+	virtual bool is_DisableRightLimit_allowed(Tango::AttReqType type);
 
 
 	//--------------------------------------------------------
@@ -425,7 +446,7 @@ public:
 //	Additional Method prototypes
 	void ChangeState(Tango::DevState newState, const std::string& str = "");
 
-	template<typename T>
+	/*template<typename T>
 	void TrySetAttribute(Tango::Attribute& attr, TMCM::TMCMResoponse response) {
 		if(response.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
 			ChangeState(Tango::ALARM, fmt::format("error on command attribute '{}', error: {}", attr.get_name(), response.GetStatus()));
@@ -433,7 +454,7 @@ public:
 		}
 		T paramType = response.PayloadAsInt();
 		attr.set_value(&paramType);
-	}
+	}*/
 
 	template<typename T>
 	bool ValidateResponse(TMCM::TMCMResoponse response, T msg)

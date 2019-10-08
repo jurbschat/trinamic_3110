@@ -224,8 +224,8 @@ namespace TMCM {
 		return optional<CommandResponseBuffer>();
 	}
 
-	void SerialInterface::write(const std::string& s) {}
-	std::string SerialInterface::read() {}
+	//void SerialInterface::write(const std::string& s) {}
+	//std::string SerialInterface::read() {}
 
 	///////////////////////////////////////////////////
 
@@ -260,6 +260,9 @@ namespace TMCM {
 		TMCMCommand GetFirmwareVersion(Module module) {
 			return TMCMCommand(module, CommandCodes::GetFirmwareVersion, static_cast<CommandTypes::TYPE_TYPE>(TypeParams::FirmwareVersion::Type::BinaryFormat), CommandTypes::BANK_UNUSED, CommandTypes::VALUE_UNUSED);
 		}
+		TMCMCommand ReferenceSearch(Module module, Motor motor, TypeParams::ReferenceSearch::Type type) {
+			return TMCMCommand(module, CommandCodes::ReferenceSearch, static_cast<CommandTypes::TYPE_TYPE>(type), motor, CommandTypes::VALUE_UNUSED);
+		}
 	}
 
 	///////////////////////////////////////////////////
@@ -272,6 +275,7 @@ namespace TMCM {
 	ControllerInterface::~ControllerInterface() {}
 
 	TMCMResoponse ControllerInterface::writeRead(const TMCMCommand& command) {
+		std::lock_guard<std::mutex> lock(mtx);
 		if(!si) {
 			throw Exception("no serial interface created");
 		}

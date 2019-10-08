@@ -99,49 +99,19 @@ public:
 		{return (static_cast<TMCM_Motor *>(dev))->is_Acceleration_allowed(ty);}
 };
 
-//	Attribute RunCurrent class definition
-class RunCurrentAttrib: public Tango::Attr
+//	Attribute ConversionFactor class definition
+class ConversionFactorAttrib: public Tango::Attr
 {
 public:
-	RunCurrentAttrib():Attr("RunCurrent",
+	ConversionFactorAttrib():Attr("ConversionFactor",
 			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~RunCurrentAttrib() {};
+	~ConversionFactorAttrib() {};
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->read_RunCurrent(att);}
+		{(static_cast<TMCM_Motor *>(dev))->read_ConversionFactor(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->write_RunCurrent(att);}
+		{(static_cast<TMCM_Motor *>(dev))->write_ConversionFactor(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<TMCM_Motor *>(dev))->is_RunCurrent_allowed(ty);}
-};
-
-//	Attribute HoldCurrent class definition
-class HoldCurrentAttrib: public Tango::Attr
-{
-public:
-	HoldCurrentAttrib():Attr("HoldCurrent",
-			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~HoldCurrentAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->read_HoldCurrent(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->write_HoldCurrent(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<TMCM_Motor *>(dev))->is_HoldCurrent_allowed(ty);}
-};
-
-//	Attribute InvertDirection class definition
-class InvertDirectionAttrib: public Tango::Attr
-{
-public:
-	InvertDirectionAttrib():Attr("InvertDirection",
-			Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
-	~InvertDirectionAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->read_InvertDirection(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->write_InvertDirection(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<TMCM_Motor *>(dev))->is_InvertDirection_allowed(ty);}
+		{return (static_cast<TMCM_Motor *>(dev))->is_ConversionFactor_allowed(ty);}
 };
 
 //	Attribute SoftLimitEnable class definition
@@ -215,21 +185,6 @@ public:
 		{return (static_cast<TMCM_Motor *>(dev))->is_SoftCcwLimitFault_allowed(ty);}
 };
 
-//	Attribute HomeOffset class definition
-class HomeOffsetAttrib: public Tango::Attr
-{
-public:
-	HomeOffsetAttrib():Attr("HomeOffset",
-			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~HomeOffsetAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->read_HomeOffset(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<TMCM_Motor *>(dev))->write_HomeOffset(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<TMCM_Motor *>(dev))->is_HomeOffset_allowed(ty);}
-};
-
 //	Attribute CwLimitFault class definition
 class CwLimitFaultAttrib: public Tango::Attr
 {
@@ -254,6 +209,36 @@ public:
 		{(static_cast<TMCM_Motor *>(dev))->read_CcwLimitFault(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 		{return (static_cast<TMCM_Motor *>(dev))->is_CcwLimitFault_allowed(ty);}
+};
+
+//	Attribute RunCurrent class definition
+class RunCurrentAttrib: public Tango::Attr
+{
+public:
+	RunCurrentAttrib():Attr("RunCurrent",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~RunCurrentAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_RunCurrent(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_RunCurrent(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_RunCurrent_allowed(ty);}
+};
+
+//	Attribute HoldCurrent class definition
+class HoldCurrentAttrib: public Tango::Attr
+{
+public:
+	HoldCurrentAttrib():Attr("HoldCurrent",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~HoldCurrentAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_HoldCurrent(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_HoldCurrent(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_HoldCurrent_allowed(ty);}
 };
 
 //	Attribute Microsteps class definition
@@ -331,6 +316,51 @@ public:
 		{(static_cast<TMCM_Motor *>(dev))->write_FreeWheeling(att);}
 	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
 		{return (static_cast<TMCM_Motor *>(dev))->is_FreeWheeling_allowed(ty);}
+};
+
+//	Attribute HomeOffset class definition
+class HomeOffsetAttrib: public Tango::Attr
+{
+public:
+	HomeOffsetAttrib():Attr("HomeOffset",
+			Tango::DEV_LONG, Tango::READ_WRITE) {};
+	~HomeOffsetAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_HomeOffset(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_HomeOffset(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_HomeOffset_allowed(ty);}
+};
+
+//	Attribute DisableLeftLimit class definition
+class DisableLeftLimitAttrib: public Tango::Attr
+{
+public:
+	DisableLeftLimitAttrib():Attr("DisableLeftLimit",
+			Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~DisableLeftLimitAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_DisableLeftLimit(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_DisableLeftLimit(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_DisableLeftLimit_allowed(ty);}
+};
+
+//	Attribute DisableRightLimit class definition
+class DisableRightLimitAttrib: public Tango::Attr
+{
+public:
+	DisableRightLimitAttrib():Attr("DisableRightLimit",
+			Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~DisableRightLimitAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_DisableRightLimit(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_DisableRightLimit(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_DisableRightLimit_allowed(ty);}
 };
 
 

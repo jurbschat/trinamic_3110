@@ -3,6 +3,8 @@ project(trinamic_core)
 
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+
 include(../conanbuildinfo.cmake)
 conan_basic_setup()
 

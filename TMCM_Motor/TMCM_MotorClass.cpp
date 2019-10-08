@@ -428,7 +428,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : Position
 	PositionAttrib	*position = new PositionAttrib();
 	Tango::UserDefaultAttrProp	position_prop;
-	//	description	not set for Position
+	position_prop.set_description("position in real world units (affected by conversion factor)");
 	//	label	not set for Position
 	//	unit	not set for Position
 	//	standard_unit	not set for Position
@@ -452,7 +452,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : Velocity
 	VelocityAttrib	*velocity = new VelocityAttrib();
 	Tango::UserDefaultAttrProp	velocity_prop;
-	//	description	not set for Velocity
+	velocity_prop.set_description("velocity in real world units/s (affected by conversion factor)");
 	//	label	not set for Velocity
 	//	unit	not set for Velocity
 	//	standard_unit	not set for Velocity
@@ -476,7 +476,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : Acceleration
 	AccelerationAttrib	*acceleration = new AccelerationAttrib();
 	Tango::UserDefaultAttrProp	acceleration_prop;
-	//	description	not set for Acceleration
+	acceleration_prop.set_description("acceleration in real world units/s^2 (affected by conversion factor)");
 	//	label	not set for Acceleration
 	//	unit	not set for Acceleration
 	//	standard_unit	not set for Acceleration
@@ -497,78 +497,30 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Memorized
 	att_list.push_back(acceleration);
 
-	//	Attribute : RunCurrent
-	RunCurrentAttrib	*runcurrent = new RunCurrentAttrib();
-	Tango::UserDefaultAttrProp	runcurrent_prop;
-	runcurrent_prop.set_description("run current");
-	//	label	not set for RunCurrent
-	runcurrent_prop.set_unit("A");
-	//	standard_unit	not set for RunCurrent
-	//	display_unit	not set for RunCurrent
-	//	format	not set for RunCurrent
-	runcurrent_prop.set_max_value("3");
-	runcurrent_prop.set_min_value("0");
-	//	max_alarm	not set for RunCurrent
-	//	min_alarm	not set for RunCurrent
-	//	max_warning	not set for RunCurrent
-	//	min_warning	not set for RunCurrent
-	//	delta_t	not set for RunCurrent
-	//	delta_val	not set for RunCurrent
+	//	Attribute : ConversionFactor
+	ConversionFactorAttrib	*conversionfactor = new ConversionFactorAttrib();
+	Tango::UserDefaultAttrProp	conversionfactor_prop;
+	conversionfactor_prop.set_description("sets the conversion between real and internal units for the position/acceleration/velocity and soft limits");
+	//	label	not set for ConversionFactor
+	//	unit	not set for ConversionFactor
+	//	standard_unit	not set for ConversionFactor
+	//	display_unit	not set for ConversionFactor
+	//	format	not set for ConversionFactor
+	//	max_value	not set for ConversionFactor
+	//	min_value	not set for ConversionFactor
+	//	max_alarm	not set for ConversionFactor
+	//	min_alarm	not set for ConversionFactor
+	//	max_warning	not set for ConversionFactor
+	//	min_warning	not set for ConversionFactor
+	//	delta_t	not set for ConversionFactor
+	//	delta_val	not set for ConversionFactor
 	
-	runcurrent->set_default_properties(runcurrent_prop);
+	conversionfactor->set_default_properties(conversionfactor_prop);
 	//	Not Polled
-	runcurrent->set_disp_level(Tango::OPERATOR);
-	//	Not Memorized
-	att_list.push_back(runcurrent);
-
-	//	Attribute : HoldCurrent
-	HoldCurrentAttrib	*holdcurrent = new HoldCurrentAttrib();
-	Tango::UserDefaultAttrProp	holdcurrent_prop;
-	holdcurrent_prop.set_description("hold current if no move is in action");
-	//	label	not set for HoldCurrent
-	holdcurrent_prop.set_unit("A");
-	//	standard_unit	not set for HoldCurrent
-	//	display_unit	not set for HoldCurrent
-	//	format	not set for HoldCurrent
-	holdcurrent_prop.set_max_value("3");
-	holdcurrent_prop.set_min_value("0");
-	//	max_alarm	not set for HoldCurrent
-	//	min_alarm	not set for HoldCurrent
-	//	max_warning	not set for HoldCurrent
-	//	min_warning	not set for HoldCurrent
-	//	delta_t	not set for HoldCurrent
-	//	delta_val	not set for HoldCurrent
-	
-	holdcurrent->set_default_properties(holdcurrent_prop);
-	//	Not Polled
-	holdcurrent->set_disp_level(Tango::OPERATOR);
-	//	Not Memorized
-	att_list.push_back(holdcurrent);
-
-	//	Attribute : InvertDirection
-	InvertDirectionAttrib	*invertdirection = new InvertDirectionAttrib();
-	Tango::UserDefaultAttrProp	invertdirection_prop;
-	//	description	not set for InvertDirection
-	//	label	not set for InvertDirection
-	//	unit	not set for InvertDirection
-	//	standard_unit	not set for InvertDirection
-	//	display_unit	not set for InvertDirection
-	//	format	not set for InvertDirection
-	//	max_value	not set for InvertDirection
-	//	min_value	not set for InvertDirection
-	//	max_alarm	not set for InvertDirection
-	//	min_alarm	not set for InvertDirection
-	//	max_warning	not set for InvertDirection
-	//	min_warning	not set for InvertDirection
-	//	delta_t	not set for InvertDirection
-	//	delta_val	not set for InvertDirection
-	
-	invertdirection->set_default_properties(invertdirection_prop);
-	//	Not Polled
-	invertdirection->set_disp_level(Tango::OPERATOR);
-	invertdirection->set_memorized();
-	invertdirection->set_memorized_init(false);
-	att_list.push_back(invertdirection);
+	conversionfactor->set_disp_level(Tango::OPERATOR);
+	conversionfactor->set_memorized();
+	conversionfactor->set_memorized_init(true);
+	att_list.push_back(conversionfactor);
 
 	//	Attribute : SoftLimitEnable
 	SoftLimitEnableAttrib	*softlimitenable = new SoftLimitEnableAttrib();
@@ -592,7 +544,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Polled
 	softlimitenable->set_disp_level(Tango::OPERATOR);
 	softlimitenable->set_memorized();
-	softlimitenable->set_memorized_init(false);
+	softlimitenable->set_memorized_init(true);
 	att_list.push_back(softlimitenable);
 
 	//	Attribute : SoftCwLimit
@@ -617,7 +569,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Polled
 	softcwlimit->set_disp_level(Tango::OPERATOR);
 	softcwlimit->set_memorized();
-	softcwlimit->set_memorized_init(false);
+	softcwlimit->set_memorized_init(true);
 	att_list.push_back(softcwlimit);
 
 	//	Attribute : SoftCcwLimit
@@ -642,7 +594,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Polled
 	softccwlimit->set_disp_level(Tango::OPERATOR);
 	softccwlimit->set_memorized();
-	softccwlimit->set_memorized_init(false);
+	softccwlimit->set_memorized_init(true);
 	att_list.push_back(softccwlimit);
 
 	//	Attribute : SoftCwLimitFault
@@ -693,30 +645,6 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Memorized
 	att_list.push_back(softccwlimitfault);
 
-	//	Attribute : HomeOffset
-	HomeOffsetAttrib	*homeoffset = new HomeOffsetAttrib();
-	Tango::UserDefaultAttrProp	homeoffset_prop;
-	//	description	not set for HomeOffset
-	//	label	not set for HomeOffset
-	//	unit	not set for HomeOffset
-	//	standard_unit	not set for HomeOffset
-	//	display_unit	not set for HomeOffset
-	//	format	not set for HomeOffset
-	//	max_value	not set for HomeOffset
-	//	min_value	not set for HomeOffset
-	//	max_alarm	not set for HomeOffset
-	//	min_alarm	not set for HomeOffset
-	//	max_warning	not set for HomeOffset
-	//	min_warning	not set for HomeOffset
-	//	delta_t	not set for HomeOffset
-	//	delta_val	not set for HomeOffset
-	
-	homeoffset->set_default_properties(homeoffset_prop);
-	//	Not Polled
-	homeoffset->set_disp_level(Tango::OPERATOR);
-	//	Not Memorized
-	att_list.push_back(homeoffset);
-
 	//	Attribute : CwLimitFault
 	CwLimitFaultAttrib	*cwlimitfault = new CwLimitFaultAttrib();
 	Tango::UserDefaultAttrProp	cwlimitfault_prop;
@@ -765,10 +693,59 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Memorized
 	att_list.push_back(ccwlimitfault);
 
+	//	Attribute : RunCurrent
+	RunCurrentAttrib	*runcurrent = new RunCurrentAttrib();
+	Tango::UserDefaultAttrProp	runcurrent_prop;
+	runcurrent_prop.set_description("current when the motor is moving");
+	//	label	not set for RunCurrent
+	runcurrent_prop.set_unit("A");
+	//	standard_unit	not set for RunCurrent
+	//	display_unit	not set for RunCurrent
+	//	format	not set for RunCurrent
+	runcurrent_prop.set_max_value("3");
+	runcurrent_prop.set_min_value("0");
+	//	max_alarm	not set for RunCurrent
+	//	min_alarm	not set for RunCurrent
+	//	max_warning	not set for RunCurrent
+	//	min_warning	not set for RunCurrent
+	//	delta_t	not set for RunCurrent
+	//	delta_val	not set for RunCurrent
+	
+	runcurrent->set_default_properties(runcurrent_prop);
+	//	Not Polled
+	runcurrent->set_disp_level(Tango::OPERATOR);
+	runcurrent->set_memorized();
+	runcurrent->set_memorized_init(false);
+	att_list.push_back(runcurrent);
+
+	//	Attribute : HoldCurrent
+	HoldCurrentAttrib	*holdcurrent = new HoldCurrentAttrib();
+	Tango::UserDefaultAttrProp	holdcurrent_prop;
+	holdcurrent_prop.set_description("hold current if no move is in action");
+	//	label	not set for HoldCurrent
+	holdcurrent_prop.set_unit("A");
+	//	standard_unit	not set for HoldCurrent
+	//	display_unit	not set for HoldCurrent
+	//	format	not set for HoldCurrent
+	holdcurrent_prop.set_max_value("3");
+	holdcurrent_prop.set_min_value("0");
+	//	max_alarm	not set for HoldCurrent
+	//	min_alarm	not set for HoldCurrent
+	//	max_warning	not set for HoldCurrent
+	//	min_warning	not set for HoldCurrent
+	//	delta_t	not set for HoldCurrent
+	//	delta_val	not set for HoldCurrent
+	
+	holdcurrent->set_default_properties(holdcurrent_prop);
+	//	Not Polled
+	holdcurrent->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(holdcurrent);
+
 	//	Attribute : Microsteps
 	MicrostepsAttrib	*microsteps = new MicrostepsAttrib();
 	Tango::UserDefaultAttrProp	microsteps_prop;
-	//	description	not set for Microsteps
+	microsteps_prop.set_description("amount of steps between fullsteps");
 	//	label	not set for Microsteps
 	//	unit	not set for Microsteps
 	//	standard_unit	not set for Microsteps
@@ -805,7 +782,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : RampDivisor
 	RampDivisorAttrib	*rampdivisor = new RampDivisorAttrib();
 	Tango::UserDefaultAttrProp	rampdivisor_prop;
-	//	description	not set for RampDivisor
+	rampdivisor_prop.set_description("divisor to calculate the acceelration ramp");
 	//	label	not set for RampDivisor
 	//	unit	not set for RampDivisor
 	//	standard_unit	not set for RampDivisor
@@ -829,7 +806,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : PulseDivisor
 	PulseDivisorAttrib	*pulsedivisor = new PulseDivisorAttrib();
 	Tango::UserDefaultAttrProp	pulsedivisor_prop;
-	//	description	not set for PulseDivisor
+	pulsedivisor_prop.set_description("divisor to calculate the ustep ferquency");
 	//	label	not set for PulseDivisor
 	//	unit	not set for PulseDivisor
 	//	standard_unit	not set for PulseDivisor
@@ -853,7 +830,7 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Attribute : StepInterpolation
 	StepInterpolationAttrib	*stepinterpolation = new StepInterpolationAttrib();
 	Tango::UserDefaultAttrProp	stepinterpolation_prop;
-	//	description	not set for StepInterpolation
+	stepinterpolation_prop.set_description("interpolates 16 microsteps to 265");
 	//	label	not set for StepInterpolation
 	//	unit	not set for StepInterpolation
 	//	standard_unit	not set for StepInterpolation
@@ -897,6 +874,79 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	freewheeling->set_disp_level(Tango::OPERATOR);
 	//	Not Memorized
 	att_list.push_back(freewheeling);
+
+	//	Attribute : HomeOffset
+	HomeOffsetAttrib	*homeoffset = new HomeOffsetAttrib();
+	Tango::UserDefaultAttrProp	homeoffset_prop;
+	//	description	not set for HomeOffset
+	//	label	not set for HomeOffset
+	//	unit	not set for HomeOffset
+	//	standard_unit	not set for HomeOffset
+	//	display_unit	not set for HomeOffset
+	//	format	not set for HomeOffset
+	//	max_value	not set for HomeOffset
+	//	min_value	not set for HomeOffset
+	//	max_alarm	not set for HomeOffset
+	//	min_alarm	not set for HomeOffset
+	//	max_warning	not set for HomeOffset
+	//	min_warning	not set for HomeOffset
+	//	delta_t	not set for HomeOffset
+	//	delta_val	not set for HomeOffset
+	
+	homeoffset->set_default_properties(homeoffset_prop);
+	//	Not Polled
+	homeoffset->set_disp_level(Tango::EXPERT);
+	homeoffset->set_memorized();
+	homeoffset->set_memorized_init(true);
+	att_list.push_back(homeoffset);
+
+	//	Attribute : DisableLeftLimit
+	DisableLeftLimitAttrib	*disableleftlimit = new DisableLeftLimitAttrib();
+	Tango::UserDefaultAttrProp	disableleftlimit_prop;
+	//	description	not set for DisableLeftLimit
+	//	label	not set for DisableLeftLimit
+	//	unit	not set for DisableLeftLimit
+	//	standard_unit	not set for DisableLeftLimit
+	//	display_unit	not set for DisableLeftLimit
+	//	format	not set for DisableLeftLimit
+	//	max_value	not set for DisableLeftLimit
+	//	min_value	not set for DisableLeftLimit
+	//	max_alarm	not set for DisableLeftLimit
+	//	min_alarm	not set for DisableLeftLimit
+	//	max_warning	not set for DisableLeftLimit
+	//	min_warning	not set for DisableLeftLimit
+	//	delta_t	not set for DisableLeftLimit
+	//	delta_val	not set for DisableLeftLimit
+	
+	disableleftlimit->set_default_properties(disableleftlimit_prop);
+	//	Not Polled
+	disableleftlimit->set_disp_level(Tango::EXPERT);
+	//	Not Memorized
+	att_list.push_back(disableleftlimit);
+
+	//	Attribute : DisableRightLimit
+	DisableRightLimitAttrib	*disablerightlimit = new DisableRightLimitAttrib();
+	Tango::UserDefaultAttrProp	disablerightlimit_prop;
+	//	description	not set for DisableRightLimit
+	//	label	not set for DisableRightLimit
+	//	unit	not set for DisableRightLimit
+	//	standard_unit	not set for DisableRightLimit
+	//	display_unit	not set for DisableRightLimit
+	//	format	not set for DisableRightLimit
+	//	max_value	not set for DisableRightLimit
+	//	min_value	not set for DisableRightLimit
+	//	max_alarm	not set for DisableRightLimit
+	//	min_alarm	not set for DisableRightLimit
+	//	max_warning	not set for DisableRightLimit
+	//	min_warning	not set for DisableRightLimit
+	//	delta_t	not set for DisableRightLimit
+	//	delta_val	not set for DisableRightLimit
+	
+	disablerightlimit->set_default_properties(disablerightlimit_prop);
+	//	Not Polled
+	disablerightlimit->set_disp_level(Tango::EXPERT);
+	//	Not Memorized
+	att_list.push_back(disablerightlimit);
 
 
 	//	Create a list of static attributes
@@ -976,7 +1026,7 @@ void TMCM_MotorClass::command_factory()
 			Tango::DEV_VOID, Tango::DEV_VOID,
 			"",
 			"",
-			Tango::OPERATOR);
+			Tango::EXPERT);
 	command_list.push_back(pHomeCmd);
 
 	/*----- PROTECTED REGION ID(TMCM_MotorClass::command_factory_after) ENABLED START -----*/

@@ -173,61 +173,21 @@ bool TMCM_Motor::is_Acceleration_allowed(TANGO_UNUSED(Tango::AttReqType type))
 
 //--------------------------------------------------------
 /**
- *	Method      : TMCM_Motor::is_RunCurrent_allowed()
- *	Description : Execution allowed for RunCurrent attribute
+ *	Method      : TMCM_Motor::is_ConversionFactor_allowed()
+ *	Description : Execution allowed for ConversionFactor attribute
  */
 //--------------------------------------------------------
-bool TMCM_Motor::is_RunCurrent_allowed(TANGO_UNUSED(Tango::AttReqType type))
+bool TMCM_Motor::is_ConversionFactor_allowed(TANGO_UNUSED(Tango::AttReqType type))
 {
-	//	Not any excluded states for RunCurrent attribute in Write access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::RunCurrentStateAllowed_WRITE) ENABLED START -----*/
+	//	Not any excluded states for ConversionFactor attribute in Write access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::ConversionFactorStateAllowed_WRITE) ENABLED START -----*/
 	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::RunCurrentStateAllowed_WRITE
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::ConversionFactorStateAllowed_WRITE
 
-	//	Not any excluded states for RunCurrent attribute in read access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::RunCurrentStateAllowed_READ) ENABLED START -----*/
+	//	Not any excluded states for ConversionFactor attribute in read access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::ConversionFactorStateAllowed_READ) ENABLED START -----*/
 	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::RunCurrentStateAllowed_READ
-	return true;
-}
-
-//--------------------------------------------------------
-/**
- *	Method      : TMCM_Motor::is_HoldCurrent_allowed()
- *	Description : Execution allowed for HoldCurrent attribute
- */
-//--------------------------------------------------------
-bool TMCM_Motor::is_HoldCurrent_allowed(TANGO_UNUSED(Tango::AttReqType type))
-{
-	//	Not any excluded states for HoldCurrent attribute in Write access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::HoldCurrentStateAllowed_WRITE) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HoldCurrentStateAllowed_WRITE
-
-	//	Not any excluded states for HoldCurrent attribute in read access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::HoldCurrentStateAllowed_READ) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HoldCurrentStateAllowed_READ
-	return true;
-}
-
-//--------------------------------------------------------
-/**
- *	Method      : TMCM_Motor::is_InvertDirection_allowed()
- *	Description : Execution allowed for InvertDirection attribute
- */
-//--------------------------------------------------------
-bool TMCM_Motor::is_InvertDirection_allowed(TANGO_UNUSED(Tango::AttReqType type))
-{
-	//	Not any excluded states for InvertDirection attribute in Write access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::InvertDirectionStateAllowed_WRITE) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::InvertDirectionStateAllowed_WRITE
-
-	//	Not any excluded states for InvertDirection attribute in read access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::InvertDirectionStateAllowed_READ) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::InvertDirectionStateAllowed_READ
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::ConversionFactorStateAllowed_READ
 	return true;
 }
 
@@ -325,26 +285,6 @@ bool TMCM_Motor::is_SoftCcwLimitFault_allowed(TANGO_UNUSED(Tango::AttReqType typ
 
 //--------------------------------------------------------
 /**
- *	Method      : TMCM_Motor::is_HomeOffset_allowed()
- *	Description : Execution allowed for HomeOffset attribute
- */
-//--------------------------------------------------------
-bool TMCM_Motor::is_HomeOffset_allowed(TANGO_UNUSED(Tango::AttReqType type))
-{
-	//	Not any excluded states for HomeOffset attribute in Write access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::HomeOffsetStateAllowed_WRITE) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HomeOffsetStateAllowed_WRITE
-
-	//	Not any excluded states for HomeOffset attribute in read access.
-	/*----- PROTECTED REGION ID(TMCM_Motor::HomeOffsetStateAllowed_READ) ENABLED START -----*/
-	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HomeOffsetStateAllowed_READ
-	return true;
-}
-
-//--------------------------------------------------------
-/**
  *	Method      : TMCM_Motor::is_CwLimitFault_allowed()
  *	Description : Execution allowed for CwLimitFault attribute
  */
@@ -372,6 +312,46 @@ bool TMCM_Motor::is_CcwLimitFault_allowed(TANGO_UNUSED(Tango::AttReqType type))
 	/*----- PROTECTED REGION ID(TMCM_Motor::CcwLimitFaultStateAllowed_READ) ENABLED START -----*/
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::CcwLimitFaultStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_RunCurrent_allowed()
+ *	Description : Execution allowed for RunCurrent attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_RunCurrent_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for RunCurrent attribute in Write access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::RunCurrentStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::RunCurrentStateAllowed_WRITE
+
+	//	Not any excluded states for RunCurrent attribute in read access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::RunCurrentStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::RunCurrentStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_HoldCurrent_allowed()
+ *	Description : Execution allowed for HoldCurrent attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_HoldCurrent_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for HoldCurrent attribute in Write access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::HoldCurrentStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HoldCurrentStateAllowed_WRITE
+
+	//	Not any excluded states for HoldCurrent attribute in read access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::HoldCurrentStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HoldCurrentStateAllowed_READ
 	return true;
 }
 
@@ -472,6 +452,66 @@ bool TMCM_Motor::is_FreeWheeling_allowed(TANGO_UNUSED(Tango::AttReqType type))
 	/*----- PROTECTED REGION ID(TMCM_Motor::FreeWheelingStateAllowed_READ) ENABLED START -----*/
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::FreeWheelingStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_HomeOffset_allowed()
+ *	Description : Execution allowed for HomeOffset attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_HomeOffset_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for HomeOffset attribute in Write access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::HomeOffsetStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HomeOffsetStateAllowed_WRITE
+
+	//	Not any excluded states for HomeOffset attribute in read access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::HomeOffsetStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::HomeOffsetStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_DisableLeftLimit_allowed()
+ *	Description : Execution allowed for DisableLeftLimit attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_DisableLeftLimit_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for DisableLeftLimit attribute in Write access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::DisableLeftLimitStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::DisableLeftLimitStateAllowed_WRITE
+
+	//	Not any excluded states for DisableLeftLimit attribute in read access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::DisableLeftLimitStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::DisableLeftLimitStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : TMCM_Motor::is_DisableRightLimit_allowed()
+ *	Description : Execution allowed for DisableRightLimit attribute
+ */
+//--------------------------------------------------------
+bool TMCM_Motor::is_DisableRightLimit_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for DisableRightLimit attribute in Write access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::DisableRightLimitStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::DisableRightLimitStateAllowed_WRITE
+
+	//	Not any excluded states for DisableRightLimit attribute in read access.
+	/*----- PROTECTED REGION ID(TMCM_Motor::DisableRightLimitStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::DisableRightLimitStateAllowed_READ
 	return true;
 }
 

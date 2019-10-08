@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 include(conanbuildinfo.cmake)
 conan_basic_setup()
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+
 add_subdirectory(core)
 add_subdirectory(TMCM_Motor)
 add_subdirectory(TMCM_Global)

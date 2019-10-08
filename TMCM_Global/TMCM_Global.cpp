@@ -36,6 +36,7 @@
 
 #include <TMCM_Global.h>
 #include <TMCM_GlobalClass.h>
+#include <fmt/format.h>
 #include "../core/core.h"
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Global.cpp
@@ -145,8 +146,9 @@ void TMCM_Global::init_device()
 		core.Init(serialPort, baudrate, modules);
 		set_state(Tango::ON);
 	} catch (const std::exception& ex) {
+		fmt::print("error opening serial port: {}\n", ex.what());
 		set_state(Tango::FAULT);
-		set_status("unable to open serial port '" + serialPort + "'");
+		set_status(fmt::format("unable to open serial port '{}', error: ", serialPort, ex.what()));
 	}
 
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Global::init_device

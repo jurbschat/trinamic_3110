@@ -41,7 +41,7 @@ namespace TMCM {
 		uint8_t byte4 = (value & 0xff000000) >> 24;
 		std::array<uint8_t, 4> out {byte4, byte3, byte2, byte1};
 		return out;
-	};
+	}
 
 	//TODO: does this work on arm?
 	template<typename T, typename = IsFittingIntegral<T>>
@@ -49,7 +49,7 @@ namespace TMCM {
 		T out;
 		out = (payload[0] << 24) | (payload[1] << 16) | (payload[2] << 8) | payload[3];
 		return out;
-	};
+	}
 
 	template<size_t start, size_t count, typename T>
 	std::array<typename T::value_type, count> SliceBuffer(const T& buffer) {
@@ -186,6 +186,9 @@ namespace TMCM {
 				StepInterpolation=160,
 				ReferenceSearchMode=193,
 				ReferenceSearchSpeed=194,
+				ReferenceSwitchSpeed=195,
+				EndSwitchDistance=196,
+				LastReferencePosition=197,
 				FreeWheeling=204,
 				ActualLoad=206,
 				PowerDownDelay=214,
@@ -201,6 +204,13 @@ namespace TMCM {
 				Absolute=0,
 				Relative=1,
 				Coord=2
+			};
+		}
+		namespace ReferenceSearch {
+			enum class Type {
+				Start = 0,
+				Stop = 1,
+				Status = 2
 			};
 		}
 	}
@@ -310,6 +320,7 @@ namespace TMCM {
 		TMCMCommand SetAxisParemater(Module module, TypeParams::AxisParamaters::Type type, Motor motor, int32_t data);
 		TMCMCommand GetAxisParamater(Module module, TypeParams::AxisParamaters::Type type, Motor motor);
 		TMCMCommand MoveToPosition(Module module, Motor motor, int32_t pos);
+		TMCMCommand ReferenceSearch(Module module, Motor motor);
 		/*
 		TMCMCommand MoveToPosition(int16_t module, _DAT_TYPE_, uint8_t motor/bank, data) {}
 		TMCMCommand SetAxisParemater(int16_t module, _DAT_TYPE_, uint8_t motor/bank, data) {}
@@ -362,6 +373,7 @@ namespace TMCM {
 		void SetupConnection(std::string serialDevice, int32_t requestedRate, const std::vector<int32_t>& modules);
 
 		std::unique_ptr<SerialInterface> si;
+		std::mutex mtx;
 		//std::unordered_map<int32_t, int32_t> activeModules;
 	};
 
