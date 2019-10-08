@@ -99,6 +99,240 @@ public:
 		{return (static_cast<TMCM_Motor *>(dev))->is_Acceleration_allowed(ty);}
 };
 
+//	Attribute RunCurrent class definition
+class RunCurrentAttrib: public Tango::Attr
+{
+public:
+	RunCurrentAttrib():Attr("RunCurrent",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~RunCurrentAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_RunCurrent(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_RunCurrent(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_RunCurrent_allowed(ty);}
+};
+
+//	Attribute HoldCurrent class definition
+class HoldCurrentAttrib: public Tango::Attr
+{
+public:
+	HoldCurrentAttrib():Attr("HoldCurrent",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~HoldCurrentAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_HoldCurrent(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_HoldCurrent(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_HoldCurrent_allowed(ty);}
+};
+
+//	Attribute InvertDirection class definition
+class InvertDirectionAttrib: public Tango::Attr
+{
+public:
+	InvertDirectionAttrib():Attr("InvertDirection",
+			Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~InvertDirectionAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_InvertDirection(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_InvertDirection(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_InvertDirection_allowed(ty);}
+};
+
+//	Attribute SoftLimitEnable class definition
+class SoftLimitEnableAttrib: public Tango::Attr
+{
+public:
+	SoftLimitEnableAttrib():Attr("SoftLimitEnable",
+			Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~SoftLimitEnableAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_SoftLimitEnable(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_SoftLimitEnable(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_SoftLimitEnable_allowed(ty);}
+};
+
+//	Attribute SoftCwLimit class definition
+class SoftCwLimitAttrib: public Tango::Attr
+{
+public:
+	SoftCwLimitAttrib():Attr("SoftCwLimit",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~SoftCwLimitAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_SoftCwLimit(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_SoftCwLimit(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_SoftCwLimit_allowed(ty);}
+};
+
+//	Attribute SoftCcwLimit class definition
+class SoftCcwLimitAttrib: public Tango::Attr
+{
+public:
+	SoftCcwLimitAttrib():Attr("SoftCcwLimit",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~SoftCcwLimitAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_SoftCcwLimit(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_SoftCcwLimit(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_SoftCcwLimit_allowed(ty);}
+};
+
+//	Attribute SoftCwLimitFault class definition
+class SoftCwLimitFaultAttrib: public Tango::Attr
+{
+public:
+	SoftCwLimitFaultAttrib():Attr("SoftCwLimitFault",
+			Tango::DEV_BOOLEAN, Tango::READ) {};
+	~SoftCwLimitFaultAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_SoftCwLimitFault(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_SoftCwLimitFault_allowed(ty);}
+};
+
+//	Attribute SoftCcwLimitFault class definition
+class SoftCcwLimitFaultAttrib: public Tango::Attr
+{
+public:
+	SoftCcwLimitFaultAttrib():Attr("SoftCcwLimitFault",
+			Tango::DEV_BOOLEAN, Tango::READ) {};
+	~SoftCcwLimitFaultAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_SoftCcwLimitFault(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_SoftCcwLimitFault_allowed(ty);}
+};
+
+//	Attribute HomeOffset class definition
+class HomeOffsetAttrib: public Tango::Attr
+{
+public:
+	HomeOffsetAttrib():Attr("HomeOffset",
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
+	~HomeOffsetAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_HomeOffset(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_HomeOffset(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_HomeOffset_allowed(ty);}
+};
+
+//	Attribute CwLimitFault class definition
+class CwLimitFaultAttrib: public Tango::Attr
+{
+public:
+	CwLimitFaultAttrib():Attr("CwLimitFault",
+			Tango::DEV_BOOLEAN, Tango::READ) {};
+	~CwLimitFaultAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_CwLimitFault(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_CwLimitFault_allowed(ty);}
+};
+
+//	Attribute CcwLimitFault class definition
+class CcwLimitFaultAttrib: public Tango::Attr
+{
+public:
+	CcwLimitFaultAttrib():Attr("CcwLimitFault",
+			Tango::DEV_BOOLEAN, Tango::READ) {};
+	~CcwLimitFaultAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_CcwLimitFault(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_CcwLimitFault_allowed(ty);}
+};
+
+//	Attribute Microsteps class definition
+class MicrostepsAttrib: public Tango::Attr
+{
+public:
+	MicrostepsAttrib():Attr("Microsteps",
+			Tango::DEV_ENUM, Tango::READ_WRITE) {};
+	~MicrostepsAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_Microsteps(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_Microsteps(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_Microsteps_allowed(ty);}
+	virtual bool same_type(const type_info &in_type) {return typeid(MicrostepsEnum) == in_type;}
+	virtual string get_enum_type() {return string("MicrostepsEnum");}
+};
+
+//	Attribute RampDivisor class definition
+class RampDivisorAttrib: public Tango::Attr
+{
+public:
+	RampDivisorAttrib():Attr("RampDivisor",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~RampDivisorAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_RampDivisor(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_RampDivisor(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_RampDivisor_allowed(ty);}
+};
+
+//	Attribute PulseDivisor class definition
+class PulseDivisorAttrib: public Tango::Attr
+{
+public:
+	PulseDivisorAttrib():Attr("PulseDivisor",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~PulseDivisorAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_PulseDivisor(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_PulseDivisor(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_PulseDivisor_allowed(ty);}
+};
+
+//	Attribute StepInterpolation class definition
+class StepInterpolationAttrib: public Tango::Attr
+{
+public:
+	StepInterpolationAttrib():Attr("StepInterpolation",
+			Tango::DEV_BOOLEAN, Tango::READ_WRITE) {};
+	~StepInterpolationAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_StepInterpolation(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_StepInterpolation(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_StepInterpolation_allowed(ty);}
+};
+
+//	Attribute FreeWheeling class definition
+class FreeWheelingAttrib: public Tango::Attr
+{
+public:
+	FreeWheelingAttrib():Attr("FreeWheeling",
+			Tango::DEV_ULONG, Tango::READ_WRITE) {};
+	~FreeWheelingAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->read_FreeWheeling(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<TMCM_Motor *>(dev))->write_FreeWheeling(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<TMCM_Motor *>(dev))->is_FreeWheeling_allowed(ty);}
+};
+
 
 //=========================================
 //	Define classes for commands
@@ -124,6 +358,75 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
 	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
 	{return (static_cast<TMCM_Motor *>(dev))->is_Stop_allowed(any);}
+};
+
+//	Command ClearAlarm class definition
+class ClearAlarmClass : public Tango::Command
+{
+public:
+	ClearAlarmClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	ClearAlarmClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~ClearAlarmClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<TMCM_Motor *>(dev))->is_ClearAlarm_allowed(any);}
+};
+
+//	Command Calibrate class definition
+class CalibrateClass : public Tango::Command
+{
+public:
+	CalibrateClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	CalibrateClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~CalibrateClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<TMCM_Motor *>(dev))->is_Calibrate_allowed(any);}
+};
+
+//	Command Home class definition
+class HomeClass : public Tango::Command
+{
+public:
+	HomeClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	HomeClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~HomeClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<TMCM_Motor *>(dev))->is_Home_allowed(any);}
 };
 
 

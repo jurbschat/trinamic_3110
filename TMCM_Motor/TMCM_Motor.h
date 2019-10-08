@@ -34,6 +34,7 @@
 #define TMCM_Motor_H
 
 #include <tango.h>
+#include <fmt/format.h>
 #include "../core/core.h"
 
 
@@ -46,6 +47,19 @@
 
 namespace TMCM_Motor_ns
 {
+enum _MicrostepsEnum {
+	_0,
+	_1,
+	_4,
+	_8,
+	_16,
+	_32,
+	_64,
+	_128,
+	_256,
+} ;
+typedef _MicrostepsEnum MicrostepsEnum;
+
 /*----- PROTECTED REGION ID(TMCM_Motor::Additional Class Declarations) ENABLED START -----*/
 
 //	Additional Class Declarations
@@ -59,6 +73,7 @@ class TMCM_Motor : public TANGO_BASE_CLASS
 
 //	Add your own data members
 	TMCM::ControllerInterface* ci = nullptr;
+	float direction = 1;
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::Data Members
 
@@ -74,6 +89,22 @@ public:
 	Tango::DevDouble	*attr_Position_read;
 	Tango::DevDouble	*attr_Velocity_read;
 	Tango::DevDouble	*attr_Acceleration_read;
+	Tango::DevDouble	*attr_RunCurrent_read;
+	Tango::DevDouble	*attr_HoldCurrent_read;
+	Tango::DevBoolean	*attr_InvertDirection_read;
+	Tango::DevBoolean	*attr_SoftLimitEnable_read;
+	Tango::DevDouble	*attr_SoftCwLimit_read;
+	Tango::DevDouble	*attr_SoftCcwLimit_read;
+	Tango::DevBoolean	*attr_SoftCwLimitFault_read;
+	Tango::DevBoolean	*attr_SoftCcwLimitFault_read;
+	Tango::DevDouble	*attr_HomeOffset_read;
+	Tango::DevBoolean	*attr_CwLimitFault_read;
+	Tango::DevBoolean	*attr_CcwLimitFault_read;
+	MicrostepsEnum	*attr_Microsteps_read;
+	Tango::DevULong	*attr_RampDivisor_read;
+	Tango::DevULong	*attr_PulseDivisor_read;
+	Tango::DevBoolean	*attr_StepInterpolation_read;
+	Tango::DevULong	*attr_FreeWheeling_read;
 
 //	Constructors and destructors
 public:
@@ -172,6 +203,162 @@ public:
 	virtual void read_Acceleration(Tango::Attribute &attr);
 	virtual void write_Acceleration(Tango::WAttribute &attr);
 	virtual bool is_Acceleration_allowed(Tango::AttReqType type);
+/**
+ *	Attribute RunCurrent related methods
+ *	Description: run current
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_RunCurrent(Tango::Attribute &attr);
+	virtual void write_RunCurrent(Tango::WAttribute &attr);
+	virtual bool is_RunCurrent_allowed(Tango::AttReqType type);
+/**
+ *	Attribute HoldCurrent related methods
+ *	Description: hold current if no move is in action
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_HoldCurrent(Tango::Attribute &attr);
+	virtual void write_HoldCurrent(Tango::WAttribute &attr);
+	virtual bool is_HoldCurrent_allowed(Tango::AttReqType type);
+/**
+ *	Attribute InvertDirection related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_InvertDirection(Tango::Attribute &attr);
+	virtual void write_InvertDirection(Tango::WAttribute &attr);
+	virtual bool is_InvertDirection_allowed(Tango::AttReqType type);
+/**
+ *	Attribute SoftLimitEnable related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_SoftLimitEnable(Tango::Attribute &attr);
+	virtual void write_SoftLimitEnable(Tango::WAttribute &attr);
+	virtual bool is_SoftLimitEnable_allowed(Tango::AttReqType type);
+/**
+ *	Attribute SoftCwLimit related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_SoftCwLimit(Tango::Attribute &attr);
+	virtual void write_SoftCwLimit(Tango::WAttribute &attr);
+	virtual bool is_SoftCwLimit_allowed(Tango::AttReqType type);
+/**
+ *	Attribute SoftCcwLimit related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_SoftCcwLimit(Tango::Attribute &attr);
+	virtual void write_SoftCcwLimit(Tango::WAttribute &attr);
+	virtual bool is_SoftCcwLimit_allowed(Tango::AttReqType type);
+/**
+ *	Attribute SoftCwLimitFault related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_SoftCwLimitFault(Tango::Attribute &attr);
+	virtual bool is_SoftCwLimitFault_allowed(Tango::AttReqType type);
+/**
+ *	Attribute SoftCcwLimitFault related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_SoftCcwLimitFault(Tango::Attribute &attr);
+	virtual bool is_SoftCcwLimitFault_allowed(Tango::AttReqType type);
+/**
+ *	Attribute HomeOffset related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void read_HomeOffset(Tango::Attribute &attr);
+	virtual void write_HomeOffset(Tango::WAttribute &attr);
+	virtual bool is_HomeOffset_allowed(Tango::AttReqType type);
+/**
+ *	Attribute CwLimitFault related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_CwLimitFault(Tango::Attribute &attr);
+	virtual bool is_CwLimitFault_allowed(Tango::AttReqType type);
+/**
+ *	Attribute CcwLimitFault related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_CcwLimitFault(Tango::Attribute &attr);
+	virtual bool is_CcwLimitFault_allowed(Tango::AttReqType type);
+/**
+ *	Attribute Microsteps related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevEnum
+ *	Attr type:	Scalar
+ */
+	virtual void read_Microsteps(Tango::Attribute &attr);
+	virtual void write_Microsteps(Tango::WAttribute &attr);
+	virtual bool is_Microsteps_allowed(Tango::AttReqType type);
+/**
+ *	Attribute RampDivisor related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+	virtual void read_RampDivisor(Tango::Attribute &attr);
+	virtual void write_RampDivisor(Tango::WAttribute &attr);
+	virtual bool is_RampDivisor_allowed(Tango::AttReqType type);
+/**
+ *	Attribute PulseDivisor related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+	virtual void read_PulseDivisor(Tango::Attribute &attr);
+	virtual void write_PulseDivisor(Tango::WAttribute &attr);
+	virtual bool is_PulseDivisor_allowed(Tango::AttReqType type);
+/**
+ *	Attribute StepInterpolation related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+	virtual void read_StepInterpolation(Tango::Attribute &attr);
+	virtual void write_StepInterpolation(Tango::WAttribute &attr);
+	virtual bool is_StepInterpolation_allowed(Tango::AttReqType type);
+/**
+ *	Attribute FreeWheeling related methods
+ *	Description: duration untill the motor gets shut down power (0 disables it)
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+	virtual void read_FreeWheeling(Tango::Attribute &attr);
+	virtual void write_FreeWheeling(Tango::WAttribute &attr);
+	virtual bool is_FreeWheeling_allowed(Tango::AttReqType type);
 
 
 	//--------------------------------------------------------
@@ -201,6 +388,28 @@ public:
 	 */
 	virtual void stop();
 	virtual bool is_Stop_allowed(const CORBA::Any &any);
+	/**
+	 *	Command ClearAlarm related method
+	 *	Description: 
+	 *
+	 */
+	virtual void clear_alarm();
+	virtual bool is_ClearAlarm_allowed(const CORBA::Any &any);
+	/**
+	 *	Command Calibrate related method
+	 *	Description: 
+	 *
+	 *	@param argin 
+	 */
+	virtual void calibrate(Tango::DevLong argin);
+	virtual bool is_Calibrate_allowed(const CORBA::Any &any);
+	/**
+	 *	Command Home related method
+	 *	Description: 
+	 *
+	 */
+	virtual void home();
+	virtual bool is_Home_allowed(const CORBA::Any &any);
 
 
 	//--------------------------------------------------------
@@ -215,6 +424,26 @@ public:
 
 //	Additional Method prototypes
 	void ChangeState(Tango::DevState newState, const std::string& str = "");
+
+	template<typename T>
+	void TrySetAttribute(Tango::Attribute& attr, TMCM::TMCMResoponse response) {
+		if(response.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
+			ChangeState(Tango::ALARM, fmt::format("error on command attribute '{}', error: {}", attr.get_name(), response.GetStatus()));
+			return;
+		}
+		T paramType = response.PayloadAsInt();
+		attr.set_value(&paramType);
+	}
+
+	template<typename T>
+	bool ValidateResponse(TMCM::TMCMResoponse response, T msg)
+	{
+		if(response.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
+			ChangeState(Tango::ALARM, msg());
+			return false;
+		}
+		return true;
+	}
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::Additional Method prototypes
 };

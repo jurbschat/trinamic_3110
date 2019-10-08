@@ -56,14 +56,33 @@
 //  State         |  dev_state
 //  Status        |  Inherited (no method)
 //  Stop          |  stop
+//  ClearAlarm    |  clear_alarm
+//  Calibrate     |  calibrate
+//  Home          |  home
 //================================================================
 
 //================================================================
 //  Attributes managed are:
 //================================================================
-//  Position      |  Tango::DevDouble	Scalar
-//  Velocity      |  Tango::DevDouble	Scalar
-//  Acceleration  |  Tango::DevDouble	Scalar
+//  Position           |  Tango::DevDouble	Scalar
+//  Velocity           |  Tango::DevDouble	Scalar
+//  Acceleration       |  Tango::DevDouble	Scalar
+//  RunCurrent         |  Tango::DevDouble	Scalar
+//  HoldCurrent        |  Tango::DevDouble	Scalar
+//  InvertDirection    |  Tango::DevBoolean	Scalar
+//  SoftLimitEnable    |  Tango::DevBoolean	Scalar
+//  SoftCwLimit        |  Tango::DevDouble	Scalar
+//  SoftCcwLimit       |  Tango::DevDouble	Scalar
+//  SoftCwLimitFault   |  Tango::DevBoolean	Scalar
+//  SoftCcwLimitFault  |  Tango::DevBoolean	Scalar
+//  HomeOffset         |  Tango::DevDouble	Scalar
+//  CwLimitFault       |  Tango::DevBoolean	Scalar
+//  CcwLimitFault      |  Tango::DevBoolean	Scalar
+//  Microsteps         |  Tango::DevEnum	Scalar
+//  RampDivisor        |  Tango::DevULong	Scalar
+//  PulseDivisor       |  Tango::DevULong	Scalar
+//  StepInterpolation  |  Tango::DevBoolean	Scalar
+//  FreeWheeling       |  Tango::DevULong	Scalar
 //================================================================
 
 namespace TMCM_Motor_ns
@@ -125,6 +144,22 @@ void TMCM_Motor::delete_device()
 	delete[] attr_Position_read;
 	delete[] attr_Velocity_read;
 	delete[] attr_Acceleration_read;
+	delete[] attr_RunCurrent_read;
+	delete[] attr_HoldCurrent_read;
+	delete[] attr_InvertDirection_read;
+	delete[] attr_SoftLimitEnable_read;
+	delete[] attr_SoftCwLimit_read;
+	delete[] attr_SoftCcwLimit_read;
+	delete[] attr_SoftCwLimitFault_read;
+	delete[] attr_SoftCcwLimitFault_read;
+	delete[] attr_HomeOffset_read;
+	delete[] attr_CwLimitFault_read;
+	delete[] attr_CcwLimitFault_read;
+	delete[] attr_Microsteps_read;
+	delete[] attr_RampDivisor_read;
+	delete[] attr_PulseDivisor_read;
+	delete[] attr_StepInterpolation_read;
+	delete[] attr_FreeWheeling_read;
 }
 
 //--------------------------------------------------------
@@ -149,6 +184,22 @@ void TMCM_Motor::init_device()
 	attr_Position_read = new Tango::DevDouble[1];
 	attr_Velocity_read = new Tango::DevDouble[1];
 	attr_Acceleration_read = new Tango::DevDouble[1];
+	attr_RunCurrent_read = new Tango::DevDouble[1];
+	attr_HoldCurrent_read = new Tango::DevDouble[1];
+	attr_InvertDirection_read = new Tango::DevBoolean[1];
+	attr_SoftLimitEnable_read = new Tango::DevBoolean[1];
+	attr_SoftCwLimit_read = new Tango::DevDouble[1];
+	attr_SoftCcwLimit_read = new Tango::DevDouble[1];
+	attr_SoftCwLimitFault_read = new Tango::DevBoolean[1];
+	attr_SoftCcwLimitFault_read = new Tango::DevBoolean[1];
+	attr_HomeOffset_read = new Tango::DevDouble[1];
+	attr_CwLimitFault_read = new Tango::DevBoolean[1];
+	attr_CcwLimitFault_read = new Tango::DevBoolean[1];
+	attr_Microsteps_read = new MicrostepsEnum[1];
+	attr_RampDivisor_read = new Tango::DevULong[1];
+	attr_PulseDivisor_read = new Tango::DevULong[1];
+	attr_StepInterpolation_read = new Tango::DevBoolean[1];
+	attr_FreeWheeling_read = new Tango::DevULong[1];
 	/*----- PROTECTED REGION ID(TMCM_Motor::init_device) ENABLED START -----*/
 	
 	//	Initialize device
@@ -287,16 +338,13 @@ void TMCM_Motor::read_Position(Tango::Attribute &attr)
 	DEBUG_STREAM << "TMCM_Motor::read_Position(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(TMCM_Motor::read_Position) ENABLED START -----*/
 	//	Set the attribute value
-	//attr.set_value(attr_Position_read);
 	try {
 		if(ci) {
-			//TMCM::Builder::RotateLeft(TMCM::Module(moduleId), TMCM::Motor(motorId), 100)
-			auto result = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::ActualPosition, TMCM::Motor(motorId)));
-			if(result.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
-				ChangeState(Tango::ALARM, fmt::format("unable read position, error: {}", result.GetStatus()));
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::ActualPosition, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read position, error: {}", response.GetStatus()); } )) {
 				return;
 			}
-			Tango::DevDouble pos = result.PayloadAsInt();
+			Tango::DevDouble pos = response.PayloadAsInt();
 			attr.set_value(&pos);
 		}
 	} catch(const TMCM::Exception& ex) {
@@ -324,11 +372,8 @@ void TMCM_Motor::write_Position(Tango::WAttribute &attr)
 
 	try {
 		if(ci) {
-			//TMCM::Builder::RotateLeft(TMCM::Module(moduleId), TMCM::Motor(motorId), 100)
-			auto result = ci->writeRead(TMCM::Builder::MoveToPosition(TMCM::Module(moduleId), TMCM::Motor(motorId), int32_t(w_val)));
-			if(result.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
-				ChangeState(Tango::ALARM, "unable write position");
-			}
+			auto response = ci->writeRead(TMCM::Builder::MoveToPosition(TMCM::Module(moduleId), TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write position, error: {}", response.GetStatus()); } );
 		}
 	} catch(const TMCM::Exception& ex) {
 		tangohelpers::TranslateException(ex);
@@ -350,7 +395,18 @@ void TMCM_Motor::read_Velocity(Tango::Attribute &attr)
 	DEBUG_STREAM << "TMCM_Motor::read_Velocity(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(TMCM_Motor::read_Velocity) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_Velocity_read);
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MaxSpeed, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read velocity, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevDouble pos = response.PayloadAsInt();
+			attr.set_value(&pos);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_Velocity
 }
@@ -370,7 +426,15 @@ void TMCM_Motor::write_Velocity(Tango::WAttribute &attr)
 	Tango::DevDouble	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(TMCM_Motor::write_Velocity) ENABLED START -----*/
-	
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MaxSpeed, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write velocity, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_Velocity
 }
@@ -387,8 +451,19 @@ void TMCM_Motor::read_Acceleration(Tango::Attribute &attr)
 {
 	DEBUG_STREAM << "TMCM_Motor::read_Acceleration(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(TMCM_Motor::read_Acceleration) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_Acceleration_read);
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MaxAcceleration, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read acceleration, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevDouble pos = response.PayloadAsInt();
+			attr.set_value(&pos);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_Acceleration
 }
@@ -408,9 +483,705 @@ void TMCM_Motor::write_Acceleration(Tango::WAttribute &attr)
 	Tango::DevDouble	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(TMCM_Motor::write_Acceleration) ENABLED START -----*/
-	
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MaxAcceleration, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [response](){ return fmt::format("unable to write acceleration, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
 	
 	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_Acceleration
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute RunCurrent related method
+ *	Description: run current
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_RunCurrent(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_RunCurrent(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_RunCurrent) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MaxCurrent, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read run current, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			int32_t value = response.PayloadAsInt();
+			// value is in the range of 0-2.992 and divided into 32 steps. see hardware manual p. 22
+			Tango::DevDouble rc = (value - 0) / (255 - 0) * (2.992 - 0.093) + 0.093;
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_RunCurrent
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute RunCurrent related method
+ *	Description: run current
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_RunCurrent(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_RunCurrent(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_RunCurrent) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			w_val = std::min(3., std::max(w_val, 0.));
+			Tango::DevDouble rc = (w_val - 0) / (3 - 0) * (255 - 0) + 0;
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MaxCurrent, TMCM::Motor(motorId), int32_t(rc)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write run current, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_RunCurrent
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute HoldCurrent related method
+ *	Description: hold current if no move is in action
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_HoldCurrent(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_HoldCurrent(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_HoldCurrent) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::StandbyCurrent, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read hold current, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			int32_t value = response.PayloadAsInt();
+			// value is in the range of 0-2.992 and divided into 32 steps. see hardware manual p. 22
+			Tango::DevDouble rc = (value - 0) / (255 - 0) * (2.992 - 0.093) + 0.093;
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_HoldCurrent
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute HoldCurrent related method
+ *	Description: hold current if no move is in action
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_HoldCurrent(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_HoldCurrent(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_HoldCurrent) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			w_val = std::min(3., std::max(w_val, 0.));
+			Tango::DevDouble rc = (w_val - 0) / (3 - 0) * (255 - 0) + 0;
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::StandbyCurrent, TMCM::Motor(motorId), int32_t(rc)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write hold current, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_HoldCurrent
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute InvertDirection related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_InvertDirection(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_InvertDirection(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_InvertDirection) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_InvertDirection_read);
+
+	//TODO: can we simply invert the move command signs?
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_InvertDirection
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute InvertDirection related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_InvertDirection(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_InvertDirection(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevBoolean	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_InvertDirection) ENABLED START -----*/
+
+	//TODO: can we simply invert the move command signs?
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_InvertDirection
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SoftLimitEnable related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_SoftLimitEnable(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_SoftLimitEnable(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_SoftLimitEnable) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SoftLimitEnable_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_SoftLimitEnable
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SoftLimitEnable related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_SoftLimitEnable(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_SoftLimitEnable(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevBoolean	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_SoftLimitEnable) ENABLED START -----*/
+
+	*attr_SoftCwLimit_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_SoftLimitEnable
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SoftCwLimit related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_SoftCwLimit(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_SoftCwLimit(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_SoftCwLimit) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SoftCwLimit_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_SoftCwLimit
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SoftCwLimit related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_SoftCwLimit(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_SoftCwLimit(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_SoftCwLimit) ENABLED START -----*/
+
+	*attr_SoftCcwLimit_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_SoftCwLimit
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SoftCcwLimit related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_SoftCcwLimit(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_SoftCcwLimit(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_SoftCcwLimit) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_SoftCcwLimit_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_SoftCcwLimit
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute SoftCcwLimit related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_SoftCcwLimit(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_SoftCcwLimit(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_SoftCcwLimit) ENABLED START -----*/
+
+	*attr_SoftCcwLimit_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_SoftCcwLimit
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SoftCwLimitFault related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_SoftCwLimitFault(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_SoftCwLimitFault(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_SoftCwLimitFault) ENABLED START -----*/
+
+	//TODO: read position and check against limit
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_SoftCwLimitFault
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute SoftCcwLimitFault related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_SoftCcwLimitFault(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_SoftCcwLimitFault(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_SoftCcwLimitFault) ENABLED START -----*/
+
+	//TODO: read position and check against limit
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_SoftCcwLimitFault
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute HomeOffset related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_HomeOffset(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_HomeOffset(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_HomeOffset) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_HomeOffset_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_HomeOffset
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute HomeOffset related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_HomeOffset(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_HomeOffset(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_HomeOffset) ENABLED START -----*/
+
+	*attr_HomeOffset_read = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_HomeOffset
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute CwLimitFault related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_CwLimitFault(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_CwLimitFault(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_CwLimitFault) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::RightLimitSwitch, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read right limit switch, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevBoolean rc = response.PayloadAsInt();
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_CwLimitFault
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute CcwLimitFault related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_CcwLimitFault(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_CcwLimitFault(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_CcwLimitFault) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::LeftLimitSwitch, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read left limit switch, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevBoolean rc = response.PayloadAsInt();
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_CcwLimitFault
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute Microsteps related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevEnum (MicrostepsEnum)
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_Microsteps(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_Microsteps(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_Microsteps) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MicrostepResolution, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read microstep resolution, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevLong rc = response.PayloadAsInt();
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_Microsteps
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Microsteps related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevEnum (MicrostepsEnum)
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_Microsteps(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_Microsteps(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	MicrostepsEnum	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_Microsteps) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::MicrostepResolution, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write microstep resolution, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_Microsteps
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute RampDivisor related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_RampDivisor(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_RampDivisor(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_RampDivisor) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::RampDivisor, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read ramp divisor, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevULong rc = response.PayloadAsInt();
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_RampDivisor
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute RampDivisor related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_RampDivisor(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_RampDivisor(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_RampDivisor) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::RampDivisor, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write ramp divisor, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_RampDivisor
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute PulseDivisor related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_PulseDivisor(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_PulseDivisor(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_PulseDivisor) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::PulseDivisor, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read pulse divisor, error: {}", response.GetStatus()); } )) {
+				return;
+			}
+			Tango::DevULong rc = response.PayloadAsInt();
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_PulseDivisor
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute PulseDivisor related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_PulseDivisor(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_PulseDivisor(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_PulseDivisor) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::PulseDivisor, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write pulse divisor, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_PulseDivisor
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute StepInterpolation related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_StepInterpolation(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_StepInterpolation(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_StepInterpolation) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_StepInterpolation_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_StepInterpolation
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute StepInterpolation related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevBoolean
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_StepInterpolation(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_StepInterpolation(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevBoolean	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_StepInterpolation) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::StepInterpolation, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write step interpolation, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_StepInterpolation
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute FreeWheeling related method
+ *	Description: duration untill the motor gets shut down power (0 disables it)
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::read_FreeWheeling(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::read_FreeWheeling(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::read_FreeWheeling) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::FreeWheeling, TMCM::Motor(motorId)));
+			if(!ValidateResponse(response, [&response](){ return fmt::format("unable to read freewheeling timeout, error: {}", response.GetStatus()); } ))
+			{
+				return;
+			}
+			Tango::DevULong rc = response.PayloadAsInt();
+			attr.set_value(&rc);
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::read_FreeWheeling
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute FreeWheeling related method
+ *	Description: duration untill the motor gets shut down power (0 disables it)
+ *
+ *	Data type:	Tango::DevULong
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void TMCM_Motor::write_FreeWheeling(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "TMCM_Motor::write_FreeWheeling(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevULong	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(TMCM_Motor::write_FreeWheeling) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::SetAxisParemater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::FreeWheeling, TMCM::Motor(motorId), int32_t(w_val)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to write freewheeling timeout, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::write_FreeWheeling
 }
 
 //--------------------------------------------------------
@@ -447,15 +1218,14 @@ Tango::DevState TMCM_Motor::dev_state()
 		try {
 			if(ci) {
 				auto cmd = TMCM::Builder::GetAxisParamater(TMCM::Module(moduleId), TMCM::TypeParams::AxisParamaters::Type::PositionReached, TMCM::Motor(motorId));
-				auto result = ci->writeRead(cmd);
-				if(result.GetStatus() != TMCM::ReturnCodes::SUCCESS) {
-					set_status(fmt::format("unable to query motor status, error: {}", result.GetStatus()));
+				auto response = ci->writeRead(cmd);
+				if(!ValidateResponse(response, [&response](){ return fmt::format("unable to query motor status, error: {}", response.GetStatus()); } )) {
 					argout = Tango::ALARM;
 				}
-				if(result.PayloadAsInt() == 0) {
+				if(response.PayloadAsInt() == 0) {
 					argout = Tango::MOVING;
 				}
-				else if(result.PayloadAsInt() == 1) {
+				else if(response.PayloadAsInt() == 1) {
 					argout = Tango::ON;
 				}
 			}
@@ -481,10 +1251,66 @@ void TMCM_Motor::stop()
 {
 	DEBUG_STREAM << "TMCM_Motor::Stop()  - " << device_name << endl;
 	/*----- PROTECTED REGION ID(TMCM_Motor::stop) ENABLED START -----*/
+
+	try {
+		if(ci) {
+			auto response = ci->writeRead(TMCM::Builder::StopMotor(TMCM::Module(moduleId), TMCM::Motor(motorId)));
+			ValidateResponse(response, [&response](){ return fmt::format("unable to stop motor, error: {}", response.GetStatus()); } );
+		}
+	} catch(const TMCM::Exception& ex) {
+		tangohelpers::TranslateException(ex);
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::stop
+}
+//--------------------------------------------------------
+/**
+ *	Command ClearAlarm related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void TMCM_Motor::clear_alarm()
+{
+	DEBUG_STREAM << "TMCM_Motor::ClearAlarm()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::clear_alarm) ENABLED START -----*/
 	
 	//	Add your own code
 	
-	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::stop
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::clear_alarm
+}
+//--------------------------------------------------------
+/**
+ *	Command Calibrate related method
+ *	Description: 
+ *
+ *	@param argin 
+ */
+//--------------------------------------------------------
+void TMCM_Motor::calibrate(Tango::DevLong argin)
+{
+	DEBUG_STREAM << "TMCM_Motor::Calibrate()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::calibrate) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::calibrate
+}
+//--------------------------------------------------------
+/**
+ *	Command Home related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void TMCM_Motor::home()
+{
+	DEBUG_STREAM << "TMCM_Motor::Home()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(TMCM_Motor::home) ENABLED START -----*/
+	
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	TMCM_Motor::home
 }
 //--------------------------------------------------------
 /**

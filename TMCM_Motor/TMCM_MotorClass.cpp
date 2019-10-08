@@ -166,6 +166,62 @@ CORBA::Any *StopClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const COR
 	return new CORBA::Any();
 }
 
+//--------------------------------------------------------
+/**
+ * method : 		ClearAlarmClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *ClearAlarmClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "ClearAlarmClass::execute(): arrived" << endl;
+	((static_cast<TMCM_Motor *>(device))->clear_alarm());
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		CalibrateClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *CalibrateClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	cout2 << "CalibrateClass::execute(): arrived" << endl;
+	Tango::DevLong argin;
+	extract(in_any, argin);
+	((static_cast<TMCM_Motor *>(device))->calibrate(argin));
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		HomeClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *HomeClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "HomeClass::execute(): arrived" << endl;
+	((static_cast<TMCM_Motor *>(device))->home());
+	return new CORBA::Any();
+}
+
 
 //===================================================================
 //	Properties management
@@ -441,6 +497,407 @@ void TMCM_MotorClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Memorized
 	att_list.push_back(acceleration);
 
+	//	Attribute : RunCurrent
+	RunCurrentAttrib	*runcurrent = new RunCurrentAttrib();
+	Tango::UserDefaultAttrProp	runcurrent_prop;
+	runcurrent_prop.set_description("run current");
+	//	label	not set for RunCurrent
+	runcurrent_prop.set_unit("A");
+	//	standard_unit	not set for RunCurrent
+	//	display_unit	not set for RunCurrent
+	//	format	not set for RunCurrent
+	runcurrent_prop.set_max_value("3");
+	runcurrent_prop.set_min_value("0");
+	//	max_alarm	not set for RunCurrent
+	//	min_alarm	not set for RunCurrent
+	//	max_warning	not set for RunCurrent
+	//	min_warning	not set for RunCurrent
+	//	delta_t	not set for RunCurrent
+	//	delta_val	not set for RunCurrent
+	
+	runcurrent->set_default_properties(runcurrent_prop);
+	//	Not Polled
+	runcurrent->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(runcurrent);
+
+	//	Attribute : HoldCurrent
+	HoldCurrentAttrib	*holdcurrent = new HoldCurrentAttrib();
+	Tango::UserDefaultAttrProp	holdcurrent_prop;
+	holdcurrent_prop.set_description("hold current if no move is in action");
+	//	label	not set for HoldCurrent
+	holdcurrent_prop.set_unit("A");
+	//	standard_unit	not set for HoldCurrent
+	//	display_unit	not set for HoldCurrent
+	//	format	not set for HoldCurrent
+	holdcurrent_prop.set_max_value("3");
+	holdcurrent_prop.set_min_value("0");
+	//	max_alarm	not set for HoldCurrent
+	//	min_alarm	not set for HoldCurrent
+	//	max_warning	not set for HoldCurrent
+	//	min_warning	not set for HoldCurrent
+	//	delta_t	not set for HoldCurrent
+	//	delta_val	not set for HoldCurrent
+	
+	holdcurrent->set_default_properties(holdcurrent_prop);
+	//	Not Polled
+	holdcurrent->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(holdcurrent);
+
+	//	Attribute : InvertDirection
+	InvertDirectionAttrib	*invertdirection = new InvertDirectionAttrib();
+	Tango::UserDefaultAttrProp	invertdirection_prop;
+	//	description	not set for InvertDirection
+	//	label	not set for InvertDirection
+	//	unit	not set for InvertDirection
+	//	standard_unit	not set for InvertDirection
+	//	display_unit	not set for InvertDirection
+	//	format	not set for InvertDirection
+	//	max_value	not set for InvertDirection
+	//	min_value	not set for InvertDirection
+	//	max_alarm	not set for InvertDirection
+	//	min_alarm	not set for InvertDirection
+	//	max_warning	not set for InvertDirection
+	//	min_warning	not set for InvertDirection
+	//	delta_t	not set for InvertDirection
+	//	delta_val	not set for InvertDirection
+	
+	invertdirection->set_default_properties(invertdirection_prop);
+	//	Not Polled
+	invertdirection->set_disp_level(Tango::OPERATOR);
+	invertdirection->set_memorized();
+	invertdirection->set_memorized_init(false);
+	att_list.push_back(invertdirection);
+
+	//	Attribute : SoftLimitEnable
+	SoftLimitEnableAttrib	*softlimitenable = new SoftLimitEnableAttrib();
+	Tango::UserDefaultAttrProp	softlimitenable_prop;
+	//	description	not set for SoftLimitEnable
+	//	label	not set for SoftLimitEnable
+	//	unit	not set for SoftLimitEnable
+	//	standard_unit	not set for SoftLimitEnable
+	//	display_unit	not set for SoftLimitEnable
+	//	format	not set for SoftLimitEnable
+	//	max_value	not set for SoftLimitEnable
+	//	min_value	not set for SoftLimitEnable
+	//	max_alarm	not set for SoftLimitEnable
+	//	min_alarm	not set for SoftLimitEnable
+	//	max_warning	not set for SoftLimitEnable
+	//	min_warning	not set for SoftLimitEnable
+	//	delta_t	not set for SoftLimitEnable
+	//	delta_val	not set for SoftLimitEnable
+	
+	softlimitenable->set_default_properties(softlimitenable_prop);
+	//	Not Polled
+	softlimitenable->set_disp_level(Tango::OPERATOR);
+	softlimitenable->set_memorized();
+	softlimitenable->set_memorized_init(false);
+	att_list.push_back(softlimitenable);
+
+	//	Attribute : SoftCwLimit
+	SoftCwLimitAttrib	*softcwlimit = new SoftCwLimitAttrib();
+	Tango::UserDefaultAttrProp	softcwlimit_prop;
+	//	description	not set for SoftCwLimit
+	//	label	not set for SoftCwLimit
+	//	unit	not set for SoftCwLimit
+	//	standard_unit	not set for SoftCwLimit
+	//	display_unit	not set for SoftCwLimit
+	//	format	not set for SoftCwLimit
+	//	max_value	not set for SoftCwLimit
+	//	min_value	not set for SoftCwLimit
+	//	max_alarm	not set for SoftCwLimit
+	//	min_alarm	not set for SoftCwLimit
+	//	max_warning	not set for SoftCwLimit
+	//	min_warning	not set for SoftCwLimit
+	//	delta_t	not set for SoftCwLimit
+	//	delta_val	not set for SoftCwLimit
+	
+	softcwlimit->set_default_properties(softcwlimit_prop);
+	//	Not Polled
+	softcwlimit->set_disp_level(Tango::OPERATOR);
+	softcwlimit->set_memorized();
+	softcwlimit->set_memorized_init(false);
+	att_list.push_back(softcwlimit);
+
+	//	Attribute : SoftCcwLimit
+	SoftCcwLimitAttrib	*softccwlimit = new SoftCcwLimitAttrib();
+	Tango::UserDefaultAttrProp	softccwlimit_prop;
+	//	description	not set for SoftCcwLimit
+	//	label	not set for SoftCcwLimit
+	//	unit	not set for SoftCcwLimit
+	//	standard_unit	not set for SoftCcwLimit
+	//	display_unit	not set for SoftCcwLimit
+	//	format	not set for SoftCcwLimit
+	//	max_value	not set for SoftCcwLimit
+	//	min_value	not set for SoftCcwLimit
+	//	max_alarm	not set for SoftCcwLimit
+	//	min_alarm	not set for SoftCcwLimit
+	//	max_warning	not set for SoftCcwLimit
+	//	min_warning	not set for SoftCcwLimit
+	//	delta_t	not set for SoftCcwLimit
+	//	delta_val	not set for SoftCcwLimit
+	
+	softccwlimit->set_default_properties(softccwlimit_prop);
+	//	Not Polled
+	softccwlimit->set_disp_level(Tango::OPERATOR);
+	softccwlimit->set_memorized();
+	softccwlimit->set_memorized_init(false);
+	att_list.push_back(softccwlimit);
+
+	//	Attribute : SoftCwLimitFault
+	SoftCwLimitFaultAttrib	*softcwlimitfault = new SoftCwLimitFaultAttrib();
+	Tango::UserDefaultAttrProp	softcwlimitfault_prop;
+	//	description	not set for SoftCwLimitFault
+	//	label	not set for SoftCwLimitFault
+	//	unit	not set for SoftCwLimitFault
+	//	standard_unit	not set for SoftCwLimitFault
+	//	display_unit	not set for SoftCwLimitFault
+	//	format	not set for SoftCwLimitFault
+	//	max_value	not set for SoftCwLimitFault
+	//	min_value	not set for SoftCwLimitFault
+	//	max_alarm	not set for SoftCwLimitFault
+	//	min_alarm	not set for SoftCwLimitFault
+	//	max_warning	not set for SoftCwLimitFault
+	//	min_warning	not set for SoftCwLimitFault
+	//	delta_t	not set for SoftCwLimitFault
+	//	delta_val	not set for SoftCwLimitFault
+	
+	softcwlimitfault->set_default_properties(softcwlimitfault_prop);
+	//	Not Polled
+	softcwlimitfault->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(softcwlimitfault);
+
+	//	Attribute : SoftCcwLimitFault
+	SoftCcwLimitFaultAttrib	*softccwlimitfault = new SoftCcwLimitFaultAttrib();
+	Tango::UserDefaultAttrProp	softccwlimitfault_prop;
+	//	description	not set for SoftCcwLimitFault
+	//	label	not set for SoftCcwLimitFault
+	//	unit	not set for SoftCcwLimitFault
+	//	standard_unit	not set for SoftCcwLimitFault
+	//	display_unit	not set for SoftCcwLimitFault
+	//	format	not set for SoftCcwLimitFault
+	//	max_value	not set for SoftCcwLimitFault
+	//	min_value	not set for SoftCcwLimitFault
+	//	max_alarm	not set for SoftCcwLimitFault
+	//	min_alarm	not set for SoftCcwLimitFault
+	//	max_warning	not set for SoftCcwLimitFault
+	//	min_warning	not set for SoftCcwLimitFault
+	//	delta_t	not set for SoftCcwLimitFault
+	//	delta_val	not set for SoftCcwLimitFault
+	
+	softccwlimitfault->set_default_properties(softccwlimitfault_prop);
+	//	Not Polled
+	softccwlimitfault->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(softccwlimitfault);
+
+	//	Attribute : HomeOffset
+	HomeOffsetAttrib	*homeoffset = new HomeOffsetAttrib();
+	Tango::UserDefaultAttrProp	homeoffset_prop;
+	//	description	not set for HomeOffset
+	//	label	not set for HomeOffset
+	//	unit	not set for HomeOffset
+	//	standard_unit	not set for HomeOffset
+	//	display_unit	not set for HomeOffset
+	//	format	not set for HomeOffset
+	//	max_value	not set for HomeOffset
+	//	min_value	not set for HomeOffset
+	//	max_alarm	not set for HomeOffset
+	//	min_alarm	not set for HomeOffset
+	//	max_warning	not set for HomeOffset
+	//	min_warning	not set for HomeOffset
+	//	delta_t	not set for HomeOffset
+	//	delta_val	not set for HomeOffset
+	
+	homeoffset->set_default_properties(homeoffset_prop);
+	//	Not Polled
+	homeoffset->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(homeoffset);
+
+	//	Attribute : CwLimitFault
+	CwLimitFaultAttrib	*cwlimitfault = new CwLimitFaultAttrib();
+	Tango::UserDefaultAttrProp	cwlimitfault_prop;
+	//	description	not set for CwLimitFault
+	//	label	not set for CwLimitFault
+	//	unit	not set for CwLimitFault
+	//	standard_unit	not set for CwLimitFault
+	//	display_unit	not set for CwLimitFault
+	//	format	not set for CwLimitFault
+	//	max_value	not set for CwLimitFault
+	//	min_value	not set for CwLimitFault
+	//	max_alarm	not set for CwLimitFault
+	//	min_alarm	not set for CwLimitFault
+	//	max_warning	not set for CwLimitFault
+	//	min_warning	not set for CwLimitFault
+	//	delta_t	not set for CwLimitFault
+	//	delta_val	not set for CwLimitFault
+	
+	cwlimitfault->set_default_properties(cwlimitfault_prop);
+	//	Not Polled
+	cwlimitfault->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(cwlimitfault);
+
+	//	Attribute : CcwLimitFault
+	CcwLimitFaultAttrib	*ccwlimitfault = new CcwLimitFaultAttrib();
+	Tango::UserDefaultAttrProp	ccwlimitfault_prop;
+	//	description	not set for CcwLimitFault
+	//	label	not set for CcwLimitFault
+	//	unit	not set for CcwLimitFault
+	//	standard_unit	not set for CcwLimitFault
+	//	display_unit	not set for CcwLimitFault
+	//	format	not set for CcwLimitFault
+	//	max_value	not set for CcwLimitFault
+	//	min_value	not set for CcwLimitFault
+	//	max_alarm	not set for CcwLimitFault
+	//	min_alarm	not set for CcwLimitFault
+	//	max_warning	not set for CcwLimitFault
+	//	min_warning	not set for CcwLimitFault
+	//	delta_t	not set for CcwLimitFault
+	//	delta_val	not set for CcwLimitFault
+	
+	ccwlimitfault->set_default_properties(ccwlimitfault_prop);
+	//	Not Polled
+	ccwlimitfault->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(ccwlimitfault);
+
+	//	Attribute : Microsteps
+	MicrostepsAttrib	*microsteps = new MicrostepsAttrib();
+	Tango::UserDefaultAttrProp	microsteps_prop;
+	//	description	not set for Microsteps
+	//	label	not set for Microsteps
+	//	unit	not set for Microsteps
+	//	standard_unit	not set for Microsteps
+	//	display_unit	not set for Microsteps
+	//	format	not set for Microsteps
+	//	max_value	not set for Microsteps
+	//	min_value	not set for Microsteps
+	//	max_alarm	not set for Microsteps
+	//	min_alarm	not set for Microsteps
+	//	max_warning	not set for Microsteps
+	//	min_warning	not set for Microsteps
+	//	delta_t	not set for Microsteps
+	//	delta_val	not set for Microsteps
+	
+	{
+		vector<string> labels;
+		labels.push_back("0");
+		labels.push_back("1");
+		labels.push_back("4");
+		labels.push_back("8");
+		labels.push_back("16");
+		labels.push_back("32");
+		labels.push_back("64");
+		labels.push_back("128");
+		labels.push_back("256");
+		microsteps_prop.set_enum_labels(labels);
+	}
+	microsteps->set_default_properties(microsteps_prop);
+	//	Not Polled
+	microsteps->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(microsteps);
+
+	//	Attribute : RampDivisor
+	RampDivisorAttrib	*rampdivisor = new RampDivisorAttrib();
+	Tango::UserDefaultAttrProp	rampdivisor_prop;
+	//	description	not set for RampDivisor
+	//	label	not set for RampDivisor
+	//	unit	not set for RampDivisor
+	//	standard_unit	not set for RampDivisor
+	//	display_unit	not set for RampDivisor
+	//	format	not set for RampDivisor
+	//	max_value	not set for RampDivisor
+	//	min_value	not set for RampDivisor
+	//	max_alarm	not set for RampDivisor
+	//	min_alarm	not set for RampDivisor
+	//	max_warning	not set for RampDivisor
+	//	min_warning	not set for RampDivisor
+	//	delta_t	not set for RampDivisor
+	//	delta_val	not set for RampDivisor
+	
+	rampdivisor->set_default_properties(rampdivisor_prop);
+	//	Not Polled
+	rampdivisor->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(rampdivisor);
+
+	//	Attribute : PulseDivisor
+	PulseDivisorAttrib	*pulsedivisor = new PulseDivisorAttrib();
+	Tango::UserDefaultAttrProp	pulsedivisor_prop;
+	//	description	not set for PulseDivisor
+	//	label	not set for PulseDivisor
+	//	unit	not set for PulseDivisor
+	//	standard_unit	not set for PulseDivisor
+	//	display_unit	not set for PulseDivisor
+	//	format	not set for PulseDivisor
+	//	max_value	not set for PulseDivisor
+	//	min_value	not set for PulseDivisor
+	//	max_alarm	not set for PulseDivisor
+	//	min_alarm	not set for PulseDivisor
+	//	max_warning	not set for PulseDivisor
+	//	min_warning	not set for PulseDivisor
+	//	delta_t	not set for PulseDivisor
+	//	delta_val	not set for PulseDivisor
+	
+	pulsedivisor->set_default_properties(pulsedivisor_prop);
+	//	Not Polled
+	pulsedivisor->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(pulsedivisor);
+
+	//	Attribute : StepInterpolation
+	StepInterpolationAttrib	*stepinterpolation = new StepInterpolationAttrib();
+	Tango::UserDefaultAttrProp	stepinterpolation_prop;
+	//	description	not set for StepInterpolation
+	//	label	not set for StepInterpolation
+	//	unit	not set for StepInterpolation
+	//	standard_unit	not set for StepInterpolation
+	//	display_unit	not set for StepInterpolation
+	//	format	not set for StepInterpolation
+	//	max_value	not set for StepInterpolation
+	//	min_value	not set for StepInterpolation
+	//	max_alarm	not set for StepInterpolation
+	//	min_alarm	not set for StepInterpolation
+	//	max_warning	not set for StepInterpolation
+	//	min_warning	not set for StepInterpolation
+	//	delta_t	not set for StepInterpolation
+	//	delta_val	not set for StepInterpolation
+	
+	stepinterpolation->set_default_properties(stepinterpolation_prop);
+	//	Not Polled
+	stepinterpolation->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(stepinterpolation);
+
+	//	Attribute : FreeWheeling
+	FreeWheelingAttrib	*freewheeling = new FreeWheelingAttrib();
+	Tango::UserDefaultAttrProp	freewheeling_prop;
+	freewheeling_prop.set_description("duration untill the motor gets shut down power (0 disables it)");
+	//	label	not set for FreeWheeling
+	freewheeling_prop.set_unit("ms");
+	//	standard_unit	not set for FreeWheeling
+	//	display_unit	not set for FreeWheeling
+	//	format	not set for FreeWheeling
+	freewheeling_prop.set_max_value("65535");
+	freewheeling_prop.set_min_value("0");
+	//	max_alarm	not set for FreeWheeling
+	//	min_alarm	not set for FreeWheeling
+	//	max_warning	not set for FreeWheeling
+	//	min_warning	not set for FreeWheeling
+	//	delta_t	not set for FreeWheeling
+	//	delta_val	not set for FreeWheeling
+	
+	freewheeling->set_default_properties(freewheeling_prop);
+	//	Not Polled
+	freewheeling->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(freewheeling);
+
 
 	//	Create a list of static attributes
 	create_static_attribute_list(get_class_attr()->get_attr_list());
@@ -494,6 +951,33 @@ void TMCM_MotorClass::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pStopCmd);
+
+	//	Command ClearAlarm
+	ClearAlarmClass	*pClearAlarmCmd =
+		new ClearAlarmClass("ClearAlarm",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pClearAlarmCmd);
+
+	//	Command Calibrate
+	CalibrateClass	*pCalibrateCmd =
+		new CalibrateClass("Calibrate",
+			Tango::DEV_LONG, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pCalibrateCmd);
+
+	//	Command Home
+	HomeClass	*pHomeCmd =
+		new HomeClass("Home",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pHomeCmd);
 
 	/*----- PROTECTED REGION ID(TMCM_MotorClass::command_factory_after) ENABLED START -----*/
 	
