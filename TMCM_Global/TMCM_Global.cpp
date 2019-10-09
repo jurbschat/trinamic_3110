@@ -143,7 +143,7 @@ void TMCM_Global::init_device()
 	//	Initialize device
 	auto& core = TMCM::GetCore();
 	try {
-		core.Init(serialPort, baudrate, modules);
+		core.Init(serialPort, baudrate, std::vector<int32_t>(modules.begin(), modules.end()));
 		set_state(Tango::ON);
 	} catch (const std::exception& ex) {
 		fmt::print("error opening serial port: {}\n", ex.what());
