@@ -214,7 +214,7 @@ void TMCM_Motor::init_device()
 	*attr_Position_read = 0;
 	*attr_Velocity_read = 0;
 	*attr_Acceleration_read = 0;
-	*attr_ConversionFactor_read = false; // mem
+	*attr_ConversionFactor_read = 1; // mem
 	*attr_SoftLimitEnable_read = false; // mem
 	*attr_SoftCwLimit_read = 0; // mem
 	*attr_SoftCcwLimit_read = 0; // mem
