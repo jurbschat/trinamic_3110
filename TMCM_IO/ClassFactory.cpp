@@ -1,6 +1,7 @@
+/*----- PROTECTED REGION ID(TMCM_IO::ClassFactory.cpp) ENABLED START -----*/
 //=============================================================================
 //
-// file :        MultiClassessFactory.cpp
+// file :        ClassFactory.cpp
 //
 // description : C++ source for the class_factory method of the DServer
 //               device class. This method is responsible for the creation of
@@ -32,17 +33,18 @@
 //=============================================================================
 
 #include <tango.h>
-#include <TMCM_GlobalClass.h>
-#include <TMCM_MotorClass.h>
 #include <TMCM_IOClass.h>
 
+//	Add class header files if needed
+
+
 /**
- *	Create Class singletons and store them in DServer object.
+ *	Create TMCM_IO Class singleton and store it in DServer object.
  */
 
 void Tango::DServer::class_factory()
 {
-	add_class(TMCM_Global_ns::TMCM_GlobalClass::init("TMCM_Global"));
-	add_class(TMCM_Motor_ns::TMCM_MotorClass::init("TMCM_Motor"));
+	//	Add method class init if needed
 	add_class(TMCM_IO_ns::TMCM_IOClass::init("TMCM_IO"));
 }
+/*----- PROTECTED REGION END -----*/	//	TMCM_IO::ClassFactory.cpp

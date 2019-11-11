@@ -7,6 +7,9 @@
     <classes classname="TMCM_Motor" sourcePath="./TMCM_Motor">
       <inheritances classname="Device_Impl" sourcePath=""/>
     </classes>
+    <classes classname="TMCM_IO" sourcePath="./TMCM_IO">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
     <preferences makefileHome="/usr/share/pogo/preferences"/>
   </multiClasses>
 </pogoDsl:PogoSystem>

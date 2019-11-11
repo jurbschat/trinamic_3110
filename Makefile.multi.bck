@@ -60,9 +60,6 @@ TMCM_GLOBAL_HOME  = ./TMCM_Global
 TMCM_MOTOR_CLASS = TMCM_Motor
 TMCM_MOTOR_HOME  = ./TMCM_Motor
 
-TMCM_IO_CLASS = TMCM_IO
-TMCM_IO_HOME  = ./TMCM_IO
-
 
 #=============================================================================
 # INC_DIR_USER is the list of all include path needed by your sources
@@ -71,8 +68,7 @@ TMCM_IO_HOME  = ./TMCM_IO
 #
 INC_DIR_USER= -I . \
               -I $(TMCM_GLOBAL_HOME)\
-              -I $(TMCM_MOTOR_HOME)\
-              -I $(TMCM_IO_HOME)
+              -I $(TMCM_MOTOR_HOME)
 
 #=============================================================================
 # LIB_DIR_USER is the list of user library directories
@@ -131,7 +127,6 @@ include $(MAKE_ENV)/tango.opt
 #
 SVC_OBJS =  $(SVC_TMCM_GLOBAL_OBJS) \
             $(SVC_TMCM_MOTOR_OBJS) \
-            $(SVC_TMCM_IO_OBJS) \
             $(OBJDIR)/MultiClassesFactory.o \
             $(OBJDIR)/main.o
 
@@ -146,12 +141,6 @@ SVC_TMCM_MOTOR_OBJS = \
 		$(OBJDIR)/TMCM_Motor.o \
 		$(OBJDIR)/TMCM_MotorClass.o \
 		$(OBJDIR)/TMCM_MotorStateMachine.o
-
-#------------  Object files for TMCM_IO class  ------------
-SVC_TMCM_IO_OBJS = \
-		$(OBJDIR)/TMCM_IO.o \
-		$(OBJDIR)/TMCM_IOClass.o \
-		$(OBJDIR)/TMCM_IOStateMachine.o
 
 
 #=============================================================================
@@ -186,17 +175,5 @@ $(OBJDIR)/TMCM_MotorClass.o:  $(TMCM_MOTOR_HOME)/TMCM_MotorClass.cpp $(TMCM_MOTO
 	$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/TMCM_MotorClass.o
 $(OBJDIR)/TMCM_MotorStateMachine.o:  $(TMCM_MOTOR_HOME)/TMCM_MotorStateMachine.cpp $(TMCM_MOTOR_INCLUDES)
 	$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/TMCM_MotorStateMachine.o
-
-#------------  Object files dependancies for TMCM_IO class  ------------
-TMCM_IO_INCLUDES = \
-		$(TMCM_IO_HOME)/TMCM_IO.h \
-		$(TMCM_IO_HOME)/TMCM_IOClass.h
-
-$(OBJDIR)/TMCM_IO.o:  $(TMCM_IO_HOME)/TMCM_IO.cpp $(TMCM_IO_INCLUDES)
-	$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/TMCM_IO.o
-$(OBJDIR)/TMCM_IOClass.o:  $(TMCM_IO_HOME)/TMCM_IOClass.cpp $(TMCM_IO_INCLUDES)
-	$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/TMCM_IOClass.o
-$(OBJDIR)/TMCM_IOStateMachine.o:  $(TMCM_IO_HOME)/TMCM_IOStateMachine.cpp $(TMCM_IO_INCLUDES)
-	$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/TMCM_IOStateMachine.o
 
 

@@ -153,6 +153,7 @@ namespace TMCM {
 	TMCMResoponse SerialInterface::writeRead(const TMCMCommand& command) {
 		optional<CommandResponseBuffer> response;
 		try {
+
 			response = writeRead(command.GetData());
 		} catch(const std::exception& ex) {
 			auto err = ex.what();
@@ -262,6 +263,12 @@ namespace TMCM {
 		}
 		TMCMCommand ReferenceSearch(Module module, Motor motor, TypeParams::ReferenceSearch::Type type) {
 			return TMCMCommand(module, CommandCodes::ReferenceSearch, static_cast<CommandTypes::TYPE_TYPE>(type), motor, CommandTypes::VALUE_UNUSED);
+		}
+		TMCMCommand SetOutput(int16_t module, IO ioPort, bool state) {
+			return  TMCMCommand(module, CommandCodes::SetOutput, ioPort, TypeParams::SetIO::VALID_OUTPUT_BANK, (int32_t)state);
+		}
+		TMCMCommand GetInput(int16_t module, IO ioPort, Bank bank) {
+			return  TMCMCommand(module, CommandCodes::GetInput, ioPort, bank, CommandTypes::VALUE_UNUSED);
 		}
 	}
 

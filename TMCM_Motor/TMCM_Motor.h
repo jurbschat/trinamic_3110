@@ -35,6 +35,7 @@
 
 #include <tango.h>
 #include <fmt/format.h>
+//#include <mutex>
 #include "../core/core.h"
 
 
@@ -73,6 +74,7 @@ class TMCM_Motor : public TANGO_BASE_CLASS
 
 //	Add your own data members
 	TMCM::ControllerInterface* ci = nullptr;
+	//std::mutex lock;
 
 /*----- PROTECTED REGION END -----*/	//	TMCM_Motor::Data Members
 

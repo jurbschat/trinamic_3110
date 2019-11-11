@@ -213,6 +213,13 @@ namespace TMCM {
 				Status = 2
 			};
 		}
+		namespace SetIO {
+			const CommandTypes::VALUE_TYPE VALID_OUTPUT_BANK = 2;
+			enum Type {
+
+			};
+			enum Value {};
+		}
 	}
 
 	/*
@@ -310,6 +317,7 @@ namespace TMCM {
 	};
 
 	using Bank = Motor;
+	using IO = Motor;
 
 	namespace Builder {
 		TMCMCommand RotateRight(Module module, Motor motor, uint32_t velocity);
@@ -321,6 +329,8 @@ namespace TMCM {
 		TMCMCommand GetAxisParamater(Module module, TypeParams::AxisParamaters::Type type, Motor motor);
 		TMCMCommand MoveToPosition(Module module, Motor motor, int32_t pos);
 		TMCMCommand ReferenceSearch(Module module, Motor motor);
+		TMCMCommand SetOutput(int16_t module, IO ioPort, bool state);
+		TMCMCommand GetInput(int16_t module, IO ioPort, Bank bank);
 		/*
 		TMCMCommand MoveToPosition(int16_t module, _DAT_TYPE_, uint8_t motor/bank, data) {}
 		TMCMCommand SetAxisParemater(int16_t module, _DAT_TYPE_, uint8_t motor/bank, data) {}
